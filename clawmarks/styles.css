@@ -1,0 +1,9 @@
+body {
+    display: grid;
+}
+
+#game-container {
+    margin: auto;
+}
+
+

@@ -5,9 +5,13 @@ import TitleScene from "./Scenes/TitleScene.js"
 
 
 const config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    type: Phaser.WEBGL,
+
+    scale: {
+        width: 800,
+        height: 600,
+        parent: "game-container",
+    },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
     pixelArt: true,
     physics: {
