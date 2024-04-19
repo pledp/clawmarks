@@ -90,7 +90,7 @@ export class LandingTask extends Task {
 
         this.correct_command = "landing";
 
-        if(random_value) {
+        if(random_value == 0) {
             this.correct_value = "deny";
             this.task_instruction = "'s landing was denied!";
         }
@@ -130,7 +130,7 @@ export class TakeoffTask extends Task {
 
         this.correct_command = "takeoff";
 
-        if(random_value) {
+        if(random_value == 0) {
             this.correct_value = "deny";
             this.task_instruction = "'s takeoff request was denied!";
         }

@@ -11,8 +11,9 @@ export default class LoginScene extends Phaser.Scene
 
     preload ()
     {
-        this.load.bitmapFont("PixelFont", "assets/fonts/PixelFont.png", "assets/fonts/PixelFont.xml");
-        this.Button = new Button("Menu", this.ChangeScene);
+        this.menu_button = new Button("Menu", () => {
+            this.scene.start("MenuScene");
+        });
 
         this.Flight = new Flight();
         console.log(this.Flight.print_task);
@@ -24,10 +25,6 @@ export default class LoginScene extends Phaser.Scene
     create ()
     {
         this.add.bitmapText(0, 0, 'PixelFont', 'Login Scene', 30);
-        this.Button.create(this);
-    }
-
-    ChangeScene(scene) {
-        scene.scene.start("MenuScene");
+        this.menu_button.create(this, 0, 100);
     }
 }
