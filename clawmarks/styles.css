@@ -4,6 +4,5 @@ body {
 
 #game-container {
     margin: auto;
+    max-width: 60%;
 }
-
-

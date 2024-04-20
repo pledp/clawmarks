@@ -8,18 +8,15 @@ const config = {
     type: Phaser.WEBGL,
 
     scale: {
-        width: 800,
-        height: 600,
+        width: 1280,
+        height: 800,
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
         parent: "game-container",
     },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
     pixelArt: true,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 200 }
-        }
-    }
+
 };
 
 const game = new Phaser.Game(config);

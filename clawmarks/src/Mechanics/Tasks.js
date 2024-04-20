@@ -13,6 +13,9 @@ export class Task {
     // Validate input command, check if it is correct
     ValidateCommand(command) {};
 
+    GetCompleteText() {
+        return this.#task_complete_text;
+    }
     OnCompletion() {};
 }
 
@@ -92,10 +95,10 @@ export class LandingTask extends Task {
 
         if(random_value == 0) {
             this.correct_value = "deny";
-            this.task_instruction = "'s landing was denied!";
+            this.task_complete_text = "'s landing was denied!";
         }
         else {
-            self.correct_value = "permit";
+            this.correct_value = "permit";
 
             random_value = Math.random();
             if(random_value >= 0.98)
@@ -108,7 +111,7 @@ export class LandingTask extends Task {
                 this.task_complete_text = " has landed without issue!";
         }
 
-        this.task_instruction = `${self.correct_value} landing.`
+        this.task_instruction = `${this.correct_value} landing.`
         
         
     }
@@ -132,10 +135,10 @@ export class TakeoffTask extends Task {
 
         if(random_value == 0) {
             this.correct_value = "deny";
-            this.task_instruction = "'s takeoff request was denied!";
+            this.task_complete_text = "'s takeoff request was denied!";
         }
         else {
-            self.correct_value = "permit";
+            this.correct_value = "permit";
 
             random_value = Math.random();
             if(random_value >= 0.98)
@@ -148,7 +151,7 @@ export class TakeoffTask extends Task {
                 this.task_complete_text = " is on route to her destination!";
         }
 
-        this.task_instruction = `${self.correct_value} takeoff.`
+        this.task_instruction = `${this.correct_value} takeoff.`
         
         
     }

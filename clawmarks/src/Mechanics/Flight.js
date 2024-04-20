@@ -6,7 +6,11 @@ class Test {
 
 export default class Flight extends Task {
     static airliners = ["AX", "AY"];
-    static available_tasks = [AltitudeTask, HeadingTask, TakeoffTask, LandingTask, Test];
+    static available_tasks = [AltitudeTask, HeadingTask, TakeoffTask, LandingTask];
+
+    static CreateFlight(force_task = null) {
+        return new Flight(force_task);
+    }
 
     constructor(force_task = null) {
         super();
