@@ -16,7 +16,7 @@ export default class Flight extends Task {
         super();
 
         this.airliner = Flight.airliners[Math.round(Math.random())];
-        this.flight_number = Math.floor(Math.random(9999) + 100);
+        this.flight_number = Math.floor(Math.random() * 999) + 100;
         
         if(force_task) 
             this.task = new force_task();
@@ -32,7 +32,7 @@ export default class Flight extends Task {
         else if (this.task instanceof LandingTask) 
             random_airport = 1;
 
-        if(random_airport) {
+        if(random_airport == 0) {
             this.origin_airport = "HEL";
             this.destination_airport = "SOME";
         }
@@ -46,7 +46,9 @@ export default class Flight extends Task {
     }
 s
     ValidateCommand(command) {
-        this.task.ValidateCommand(command);
+        console.log(command);
+        // Check flight number and pass rest of command to task
+        return command.substring(0, command.indexOf(' ')) && this.task.ValidateCommand(command.substring(command.indexOf(' ') + 1));
     }
 
     OnCompletion() {

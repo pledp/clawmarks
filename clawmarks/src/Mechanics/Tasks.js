@@ -119,7 +119,7 @@ export class LandingTask extends Task {
     ValidateCommand(command) {
         if(command.split(" ").length == 3) {
             let [value, task, airport] = command.split(" ");
-            return value.toLowerCase() == this.correct_value.toLowerCase() && task == this.correct_command.toLowerCase() && airport.toLowerCase == "hel";
+            return value.toLowerCase() == this.correct_value.toLowerCase() && task == this.correct_command.toLowerCase() && airport.toLowerCase() == "hel";
         }
         else 
             return false;
@@ -159,7 +159,7 @@ export class TakeoffTask extends Task {
     ValidateCommand(command) {
         if(command.split(" ").length == 3) {
             let [value, task, airport] = command.split(" ");
-            return value.toLowerCase() == this.correct_value.toLowerCase() && task == this.correct_command.toLowerCase() && airport.toLowerCase == "hel";
+            return value.toLowerCase() == this.correct_value.toLowerCase() && task == this.correct_command.toLowerCase() && airport.toLowerCase() == "hel";
         }
         else 
             return false;

@@ -8,6 +8,8 @@ export default class GameScene extends Phaser.Scene
 
     preload ()
     {
+        this.cur_task = 0;
+
         this.game_mode = new TimedGameMode();
         this.tasks = [];
 
@@ -17,24 +19,71 @@ export default class GameScene extends Phaser.Scene
     }
 
     update() {
-        
+        if(Phaser.Input.Keyboard.JustDown(this.up_key) && this.cur_task > 0) {
+            this.MoveCursor(this.cur_task - 1);
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.text_container.list.length - 1) {
+            this.MoveCursor(this.cur_task + 1)
+        }
     }
 
     create ()
     {
-        /*
-        const graphics = this.add.graphics();
+        this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
-        graphics.fillStyle(0xffff00, 1);
-        graphics.fillRect(0, 100, this.game.config.width -10, 200);
-        */
+        this.text_container = this.add.container(0, 0);
 
         for(let i = 0; i < this.tasks.length; i++) {
-            let text = this.add.bitmapText(0, 50 + i * 50, 'PixelFont', this.tasks[i].print_task);
-            text.setTint(0xff0000);
+            let text = new Phaser.GameObjects.BitmapText(this, 0, i * 50, 'PixelFont', this.tasks[i].print_task);
+
+            if(i == this.cur_task) 
+                text.setTint(0xff0000);
+
+            this.text_container.add(text);
         }
+        
+        const input_text = this.add.bitmapText(0, this.game.config.height - 32, 'PixelFont', '> ');
 
-        this.add.bitmapText(0, 0, 'PixelFont', 'GameScene');
+        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 32, 'PixelFont', "");
 
+        // Input field imput
+        this.input.keyboard.on('keydown', event =>
+        {
+            // Submit command
+            if(event.keyCode === Phaser.Input.Keyboard.KeyCodes.ENTER) {
+                if(this.tasks[this.cur_task].ValidateCommand(input_field.text)) {
+                    this.RemoveTask();
+                    this.MoveCursor(0);
+                }
+                
+                input_field.text = "";
+            }
+
+            if (event.keyCode === 8 && input_field.text.length > 0)
+                input_field.text = input_field.text.substr(0, input_field.text.length - 1);
+            else if (event.keyCode === 32 || (event.keyCode >= 48 && event.keyCode <= 90))
+                input_field.text += event.key;
+        });
+    }
+
+    MoveCursor(to) {
+        let list = this.text_container.list
+
+        list[this.cur_task].clearTint();
+        list[to].setTint(0xff0000);
+
+        this.cur_task = to;
+    }
+
+    RemoveTask() {
+        let list = this.text_container.list
+
+        this.tasks.splice(this.cur_task, 1);
+        this.text_container.removeAt(this.cur_task, true);
+
+        for(let i = this.cur_task; i < list.length; i++) {
+            list[i].y -= 50;
+        }
     }
 }
