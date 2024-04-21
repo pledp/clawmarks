@@ -43,7 +43,7 @@ export default class TitleScene extends Phaser.Scene
 
     AddConsoleText() {
         if(this.cur_text_index < this.console_text.length) {
-            this.add.bitmapText(0, this.cur_text_index * 36, 'PixelFont', this.console_text[this.cur_text_index], 25);
+            this.add.bitmapText(0, this.cur_text_index * 20, 'PixelFont', this.console_text[this.cur_text_index], 20);
             this.cur_text_index++;
         }
         else {

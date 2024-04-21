@@ -10,22 +10,20 @@ const config = {
     type: Phaser.WEBGL,
 
     scale: {
-        width: 1080,
-        height: 800,
+        width: 960,
+        height: 540,
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         parent: "game-container",
     },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
-    pixelArt: true,
-    
-    debug: true,
 
+    pixelArt: true,
 };
 
 // Set game config (Debug mode etc)
 Clawmarks.SetConfig({
-    Debug: true,
+    Debug: false,
 });
 
 const game = new Phaser.Game(config);
