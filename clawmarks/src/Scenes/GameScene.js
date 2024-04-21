@@ -35,7 +35,7 @@ export default class GameScene extends Phaser.Scene
         this.text_container = this.add.container(0, 0);
 
         for(let i = 0; i < this.tasks.length; i++) {
-            let text = new Phaser.GameObjects.BitmapText(this, 0, i * 50, 'PixelFont', this.tasks[i].print_task);
+            let text = new Phaser.GameObjects.BitmapText(this, 0, i * 25, 'PixelFont', this.tasks[i].print_task);
 
             if(i == this.cur_task) 
                 text.setTint(0xff0000);
@@ -43,9 +43,9 @@ export default class GameScene extends Phaser.Scene
             this.text_container.add(text);
         }
         
-        const input_text = this.add.bitmapText(0, this.game.config.height - 32, 'PixelFont', '> ');
+        const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '> ');
 
-        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 32, 'PixelFont', "");
+        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 16, 'PixelFont', "");
 
         // Input field imput
         this.input.keyboard.on('keydown', event =>
@@ -70,7 +70,9 @@ export default class GameScene extends Phaser.Scene
     MoveCursor(to) {
         let list = this.text_container.list
 
-        list[this.cur_task].clearTint();
+        if(list[to])
+            list[this.cur_task].clearTint();
+        
         list[to].setTint(0xff0000);
 
         this.cur_task = to;
@@ -81,9 +83,9 @@ export default class GameScene extends Phaser.Scene
 
         this.tasks.splice(this.cur_task, 1);
         this.text_container.removeAt(this.cur_task, true);
-
+        
         for(let i = this.cur_task; i < list.length; i++) {
-            list[i].y -= 50;
+            list[i].y -= 25;
         }
     }
 }
