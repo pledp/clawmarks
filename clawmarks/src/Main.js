@@ -2,13 +2,15 @@ import GameScene from "./Scenes/GameScene.js";
 import LoginScene from "./Scenes/LoginScene.js"
 import MenuScene from "./Scenes/MenuScene.js"
 import TitleScene from "./Scenes/TitleScene.js"
+import Clawmarks from "./Clawmarks.js";
 
 
+// Phaser (Game framework config)
 const config = {
     type: Phaser.WEBGL,
 
     scale: {
-        width: 1280,
+        width: 1080,
         height: 800,
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -16,7 +18,14 @@ const config = {
     },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
     pixelArt: true,
+    
+    debug: true,
 
 };
+
+// Set game config (Debug mode etc)
+Clawmarks.SetConfig({
+    Debug: true,
+});
 
 const game = new Phaser.Game(config);

@@ -24,5 +24,7 @@ export default class MenuScene extends Phaser.Scene
     {
         this.add.bitmapText(0, 0, 'PixelFont', 'Menu Scene', 30);
         this.game_button.create(this, 0, 100);
+        this.login_button.create(this, 0, 200);
+
     }
 }
