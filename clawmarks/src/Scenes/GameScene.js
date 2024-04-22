@@ -32,32 +32,36 @@ export default class GameScene extends Phaser.Scene
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
-        this.text_container = this.add.container(0, 0);
-
+        // Tasks GUI
+        this.tasks_container = this.add.container(0, 0);
         let padding = 0;
-
         for(let i = 0; i < this.tasks.length; i++) {
 
             if(i > 0)
                 padding += 8;
 
-            let task_container = this.add.container(i * 230 + 8 + padding, 8);
+            // Container for individual task
+            let task = this.add.container(i * 230 + 8 + padding, 8);
+
+            // Background for task
             let rect = new Phaser.GameObjects.Rectangle(this, 115, 32, 230, 64, 0xfff1e8, 1);
-            let flight_text = new Phaser.GameObjects.BitmapText(this, 4, 4, 'PixelFont', `${this.tasks[i].airliner}${this.tasks[i].flight_number}`);
-            let airport_text = new Phaser.GameObjects.BitmapText(this, 0, 0, 'PixelFont', `${this.tasks[i].origin_airport} -> ${this.tasks[i].destination_airport}`);
+            let flight_text = new Phaser.GameObjects.BitmapText(this, 4, 4, 'PixelFont', `${this.tasks[i].airliner}${this.tasks[i].flight_number}`, 16);
+            let airport_text = new Phaser.GameObjects.BitmapText(this, 4, flight_text.height + 8, 'PixelFont', `${this.tasks[i].origin_airport}->${this.tasks[i].destination_airport}`, 10);
 
-            airport_text = new Phaser.GameObjects.BitmapText(this, 230 - 4 - airport_text.width, 4, 'PixelFont', `${this.tasks[i].origin_airport} -> ${this.tasks[i].destination_airport}`);
+            // Set text color
+            flight_text.setTint(0x000000);
+            airport_text.setTint(0x000000);
 
-            task_container.add(rect);
-            task_container.add(flight_text);
-            task_container.add(airport_text);
+            task.add(rect);
+            task.add(flight_text);
+            task.add(airport_text);
 
-            this.text_container.add(task_container);
+            this.tasks_container.add(task_container);
         }
         
-        const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '> ');
-
-        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 16, 'PixelFont', "");
+        // Input fields
+        const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '> ', 16);
+        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 16, 'PixelFont', "", 16);
 
         // Input field imput
         this.input.keyboard.on('keydown', event =>
@@ -79,6 +83,7 @@ export default class GameScene extends Phaser.Scene
         });
     }
 
+    // Move task cursor
     MoveCursor(to) {
         let list = this.text_container.list
 
@@ -90,6 +95,7 @@ export default class GameScene extends Phaser.Scene
         this.cur_task = to;
     }
 
+    // Remove task
     RemoveTask() {
         let list = this.text_container.list
 
