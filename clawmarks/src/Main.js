@@ -10,8 +10,8 @@ const config = {
     type: Phaser.WEBGL,
 
     scale: {
-        width: 640,
-        height: 480,
+        width: 960,
+        height: 540,
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         parent: "game-container",

@@ -34,13 +34,25 @@ export default class GameScene extends Phaser.Scene
 
         this.text_container = this.add.container(0, 0);
 
+        let padding = 0;
+
         for(let i = 0; i < this.tasks.length; i++) {
-            let text = new Phaser.GameObjects.BitmapText(this, 0, i * 25, 'PixelFont', this.tasks[i].print_task);
 
-            if(i == this.cur_task) 
-                text.setTint(0xff0000);
+            if(i > 0)
+                padding += 8;
 
-            this.text_container.add(text);
+            let task_container = this.add.container(i * 230 + 8 + padding, 8);
+            let rect = new Phaser.GameObjects.Rectangle(this, 115, 32, 230, 64, 0xfff1e8, 1);
+            let flight_text = new Phaser.GameObjects.BitmapText(this, 4, 4, 'PixelFont', `${this.tasks[i].airliner}${this.tasks[i].flight_number}`);
+            let airport_text = new Phaser.GameObjects.BitmapText(this, 0, 0, 'PixelFont', `${this.tasks[i].origin_airport} -> ${this.tasks[i].destination_airport}`);
+
+            airport_text = new Phaser.GameObjects.BitmapText(this, 230 - 4 - airport_text.width, 4, 'PixelFont', `${this.tasks[i].origin_airport} -> ${this.tasks[i].destination_airport}`);
+
+            task_container.add(rect);
+            task_container.add(flight_text);
+            task_container.add(airport_text);
+
+            this.text_container.add(task_container);
         }
         
         const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '> ');
