@@ -38,16 +38,16 @@ Depending on how fast you complete a certain task, you get a certain amount of p
 # Color palette
 
 Primary Color: 
-- ![#000000](https://placehold.co/15x15/f03c15/000000.png) `#000000`
+- ![#000000](https://placehold.co/15x15/000000/000000.png) `#000000`
 
 Secondary Color:
-- ![#fff1e8](https://placehold.co/15x15/f03c15/fff1e8.png) `#fff1e8`
+- ![#fff1e8](https://placehold.co/15x15/fff1e8/fff1e8.png) `#fff1e8`
 
 Tertiary Colors:
-- ![#ff004d](https://placehold.co/15x15/f03c15/ff004d.png) `#ff004d`
-- ![#00e436](https://placehold.co/15x15/f03c15/00e436.png) `#00e436`
-- ![#29adff](https://placehold.co/15x15/f03c15/29adff.png) `#a9adff`
-- ![#ffec27](https://placehold.co/15x15/f03c15/ffec27.png) `#ffec27`
+- ![#ff004d](https://placehold.co/15x15/ff004d/ff004d.png) `#ff004d`
+- ![#00e436](https://placehold.co/15x15/00e436/00e436.png) `#00e436`
+- ![#29adff](https://placehold.co/15x15/29adff/29adff.png) `#a9adff`
+- ![#ffec27](https://placehold.co/15x15/ffec27/ffec27.png) `#ffec27`
 
 
 
