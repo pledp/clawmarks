@@ -56,11 +56,11 @@ export default class GameScene extends Phaser.Scene
             task.add(flight_text);
             task.add(airport_text);
 
-            this.tasks_container.add(task_container);
+            this.tasks_container.add(task);
         }
         
         // Input fields
-        const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '> ', 16);
+        const input_text = this.add.bitmapText(0, this.game.config.height - 16, 'PixelFont', '>', 16);
         const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 16, 'PixelFont', "", 16);
 
         // Input field imput
@@ -85,7 +85,7 @@ export default class GameScene extends Phaser.Scene
 
     // Move task cursor
     MoveCursor(to) {
-        let list = this.text_container.list
+        let list = this.tasks_container.list
 
         if(list[to])
             list[this.cur_task].clearTint();
@@ -97,10 +97,10 @@ export default class GameScene extends Phaser.Scene
 
     // Remove task
     RemoveTask() {
-        let list = this.text_container.list
+        let list = this.tasks_container.list
 
         this.tasks.splice(this.cur_task, 1);
-        this.text_container.removeAt(this.cur_task, true);
+        this.tasks_container.removeAt(this.cur_task, true);
         
         for(let i = this.cur_task; i < list.length; i++) {
             list[i].y -= 25;
