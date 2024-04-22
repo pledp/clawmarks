@@ -49,6 +49,8 @@ Tertiary Colors:
 - ![#29adff](https://placehold.co/15x15/29adff/29adff.png) `#a9adff`
 - ![#ffec27](https://placehold.co/15x15/ffec27/ffec27.png) `#ffec27`
 
+ALl other colors of the PICO-8 palette are available.
+
 
 
 
