@@ -35,3 +35,24 @@ etc
 
 Depending on how fast you complete a certain task, you get a certain amount of points! But, if you fail a certian task a number of times, the airplane crashes... But, you get eco-friendly points!
 
+# Color palette
+
+Primary Color: 
+- ![#000000](https://placehold.co/15x15/f03c15/000000.png) `#000000`
+
+Secondary Color:
+- ![#fff1e8](https://placehold.co/15x15/f03c15/fff1e8.png) `#fff1e8`
+
+Tertiary Colors:
+- ![#ff004d](https://placehold.co/15x15/f03c15/ff004d.png) `#ff004d`
+- ![#00e436](https://placehold.co/15x15/f03c15/00e436.png) `#00e436`
+- ![#29adff](https://placehold.co/15x15/f03c15/29adff.png) `#a9adff`
+- ![#ffec27](https://placehold.co/15x15/f03c15/ffec27.png) `#ffec27`
+
+
+
+
+
+
+
+
