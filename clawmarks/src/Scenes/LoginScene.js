@@ -25,6 +25,6 @@ export default class LoginScene extends Phaser.Scene
     create ()
     {
         this.add.bitmapText(0, 0, 'PixelFont', 'Login Scene');
-        this.menu_button.create(this, 0, 100);
+        this.menu_button.create(this, 0, 100, 30);
     }
 }

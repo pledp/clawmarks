@@ -22,7 +22,7 @@ export default class GameScene extends Phaser.Scene
         if(Phaser.Input.Keyboard.JustDown(this.up_key) && this.cur_task > 0) {
             this.MoveCursor(this.cur_task - 1);
         }
-        if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.text_container.list.length - 1) {
+        if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.tasks_container.list.length - 1) {
             this.MoveCursor(this.cur_task + 1)
         }
     }
@@ -38,23 +38,31 @@ export default class GameScene extends Phaser.Scene
         for(let i = 0; i < this.tasks.length; i++) {
 
             if(i > 0)
-                padding += 8;
+                padding += 16;
 
             // Container for individual task
-            let task = this.add.container(i * 230 + 8 + padding, 8);
+            let task = this.add.container(this.game.config.width - 400 - 8, i * 128 + 16 + padding);
 
             // Background for task
-            let rect = new Phaser.GameObjects.Rectangle(this, 115, 32, 230, 64, 0xfff1e8, 1);
-            let flight_text = new Phaser.GameObjects.BitmapText(this, 4, 4, 'PixelFont', `${this.tasks[i].airliner}${this.tasks[i].flight_number}`, 16);
-            let airport_text = new Phaser.GameObjects.BitmapText(this, 4, flight_text.height + 8, 'PixelFont', `${this.tasks[i].origin_airport}->${this.tasks[i].destination_airport}`, 10);
+            let border = new Phaser.GameObjects.Rectangle(this, 200, 64, 400, 128, 0xfff1e8, 1);
+            let rect = new Phaser.GameObjects.Rectangle(this, 200, 64, 390, 118, 0x000000, 1);
+
+            let flight_text = new Phaser.GameObjects.BitmapText(this, 16, 16, 'PixelFont', `${this.tasks[i].airliner}${this.tasks[i].flight_number}`, 30);
+            let airport_text = new Phaser.GameObjects.BitmapText(this, 16, flight_text.height + 16, 'PixelFont', `${this.tasks[i].origin_airport} -> ${this.tasks[i].destination_airport}`, 20);
+            let task_text = new Phaser.GameObjects.BitmapText(this, 16,  128 - 30, 'PixelFont', `${this.tasks[i].task.task_instruction}`, 16);
+
 
             // Set text color
-            flight_text.setTint(0x000000);
-            airport_text.setTint(0x000000);
+            flight_text.setTint(0xfff1e8);
+            airport_text.setTint(0xfff1e8);
+            task_text.setTint(0xfff1e8);
 
+
+            task.add(border);
             task.add(rect);
             task.add(flight_text);
             task.add(airport_text);
+            task.add(task_text);
 
             this.tasks_container.add(task);
         }
@@ -85,13 +93,6 @@ export default class GameScene extends Phaser.Scene
 
     // Move task cursor
     MoveCursor(to) {
-        let list = this.tasks_container.list
-
-        if(list[to])
-            list[this.cur_task].clearTint();
-        
-        list[to].setTint(0xff0000);
-
         this.cur_task = to;
     }
 
@@ -103,7 +104,7 @@ export default class GameScene extends Phaser.Scene
         this.tasks_container.removeAt(this.cur_task, true);
         
         for(let i = this.cur_task; i < list.length; i++) {
-            list[i].y -= 25;
+            list[i].y -= 128 + 16;
         }
     }
 }

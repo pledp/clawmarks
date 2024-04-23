@@ -94,11 +94,11 @@ export class LandingTask extends Task {
         this.correct_command = "landing";
 
         if(random_value == 0) {
-            this.correct_value = "deny";
+            this.correct_value = "Deny";
             this.task_complete_text = "'s landing was denied!";
         }
         else {
-            this.correct_value = "permit";
+            this.correct_value = "Permit";
 
             random_value = Math.random();
             if(random_value >= 0.98)
@@ -134,11 +134,11 @@ export class TakeoffTask extends Task {
         this.correct_command = "takeoff";
 
         if(random_value == 0) {
-            this.correct_value = "deny";
+            this.correct_value = "Deny";
             this.task_complete_text = "'s takeoff request was denied!";
         }
         else {
-            this.correct_value = "permit";
+            this.correct_value = "Permit";
 
             random_value = Math.random();
             if(random_value >= 0.98)

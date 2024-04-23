@@ -1,8 +1,9 @@
 body {
     display: grid;
+    margin: 0;
 }
 
 #game-container {
     margin: auto;
-    max-width: 60%;
+    max-width: 95%;
 }
