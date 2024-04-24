@@ -4,8 +4,8 @@ export default class GameMode {
     #time;
     #game_end_text;
 
-    constructor() {}
-
+    tasks = [];
+    
     StartGame() {}
     Update() {}
     AddTask() {}
