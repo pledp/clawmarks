@@ -3,6 +3,8 @@ import LoginScene from "./Scenes/LoginScene.js"
 import MenuScene from "./Scenes/MenuScene.js"
 import TitleScene from "./Scenes/TitleScene.js"
 import Clawmarks from "./Clawmarks.js";
+import PixelShader from "../assets/shaders/GrayscaleShader.js"
+
 
 
 // Phaser (Game framework config)
@@ -17,6 +19,8 @@ const config = {
         parent: "game-container",
     },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
+
+    pipeline: { PixelShader }, 
 
     pixelArt: true,
 };

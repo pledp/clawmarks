@@ -1,4 +1,6 @@
+import PixelShader from "../../assets/shaders/GrayscaleShader.js";
 import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js"
+
 
 export default class GameScene extends Phaser.Scene
 {
@@ -56,6 +58,9 @@ export default class GameScene extends Phaser.Scene
                 input_field.text += event.key;
         });
 
+
+        this.cameras.main.setPostPipeline(PixelShader);
+
     }
 
     // Move task cursor
@@ -66,13 +71,20 @@ export default class GameScene extends Phaser.Scene
         if(list[this.cur_task]) {
             list[this.cur_task].list[0].fillColor = 0xfff1e8
             list[this.cur_task].x = this.game.config.width - 400 - 8;
+            if(list[this.cur_task].is_highlighted) {
+                list[this.cur_task].y += 25;
+                list[this.cur_task].is_highlighted = false;
+            }
         }
 
         // If element we're moving to exists
         if(list[to]) {
             list[to].x = list[to].x - 50;
+            list[to].y = list[to].y - 25;
 
             list[to].list[0].fillColor = 0xff003d;
+            
+            list[to].is_highlighted = true;
         }
 
         this.cur_task = to;
@@ -88,8 +100,6 @@ export default class GameScene extends Phaser.Scene
         for(let i = this.cur_task; i < list.length; i++) {
             list[i].y -= 128 + 16;
         }
-
-        this.padding -= 16;
     }
 
     AddTaskWidget(spot = null) {
@@ -103,6 +113,8 @@ export default class GameScene extends Phaser.Scene
 
         // Container for individual task
         let task = this.add.container(this.game.config.width - 400 - 8, (spot - 1) * 128 + 16 + spot * 16);
+        task.is_highlighted = false;
+
 
         // Background for task
         let border = new Phaser.GameObjects.Rectangle(this, 200, 64, 400, 128, 0xfff1e8, 1);
