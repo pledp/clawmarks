@@ -39,9 +39,12 @@ export default class GameScene extends Phaser.Scene
         {
             // Submit command
             if(event.keyCode === Phaser.Input.Keyboard.KeyCodes.ENTER) {
-                if(this.game_mode.tasks[this.cur_task].ValidateCommand(input_field.text)) {
-                    this.RemoveTask();
-                    this.MoveCursor(0);
+
+                if(this.game_mode.tasks[this.cur_task]) {
+                    if(this.game_mode.tasks[this.cur_task].ValidateCommand(input_field.text)) {
+                        this.RemoveTask();
+                        this.MoveCursor(0);
+                    }
                 }
                 
                 input_field.text = "";
@@ -59,12 +62,18 @@ export default class GameScene extends Phaser.Scene
     MoveCursor(to) {
         let list = this.tasks_container.list;
 
-        list[this.cur_task].list[0].fillColor = 0xfff1e8
-        list[this.cur_task].x = this.game.config.width - 400 - 8;
+        // If element we're moving away from exists
+        if(list[this.cur_task]) {
+            list[this.cur_task].list[0].fillColor = 0xfff1e8
+            list[this.cur_task].x = this.game.config.width - 400 - 8;
+        }
 
-        list[to].x = list[to].x - 50;
+        // If element we're moving to exists
+        if(list[to]) {
+            list[to].x = list[to].x - 50;
 
-        list[to].list[0].fillColor = 0xff003d;
+            list[to].list[0].fillColor = 0xff003d;
+        }
 
         this.cur_task = to;
     }
