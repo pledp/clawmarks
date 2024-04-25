@@ -1,4 +1,4 @@
-import PixelShader from "../../assets/shaders/GrayscaleShader.js";
+import CRTShader from "../../assets/shaders/CRTShader.js";
 import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js"
 
 
@@ -6,6 +6,7 @@ export default class GameScene extends Phaser.Scene
 {
     constructor() {
         super({key: "GameScene"});
+        
     }
 
     update(time, delta) {
@@ -13,28 +14,64 @@ export default class GameScene extends Phaser.Scene
             this.MoveCursor(this.cur_task - 1);
         }
         else if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.tasks_container.list.length - 1) {
-            this.MoveCursor(this.cur_task + 1)
+            this.MoveCursor(this.cur_task + 1);
         }
 
-        this.game_mode.Update(time, delta);
+        if(this.game_mode.is_playing) {
+            this.game_mode.Update(time, delta);
+
+            this.timer.text = this.game_mode.GetTime();
+            this.points_text.text = `${parseInt(this.points)}p   ${this.eco_points}ep`;
+        }
+        else
+            this.EndGame();
     }
 
     create ()
     {
+
         
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
         // Tasks GUI
-        this.tasks_container = this.add.container(0, 0);
 
         this.cur_task = 0;
+        this.consecutive_fails = 0;
+
+        this.points = 0;
+        this.eco_points = 0;
+
 
         this.game_mode = new TimedGameMode(this.AddTaskWidget.bind(this));
+        this.game_mode.StartGame();
+
+        let info_container = this.add.container(this.game.config.width - 400 - 8, 16);
+
+        let border = new Phaser.GameObjects.Rectangle(this, 200, 64, 400, 128, 0xC2C3C7, 1);
+        let rect = new Phaser.GameObjects.Rectangle(this, 200, 64, 390, 118, 0x000000, 1);
+
+        info_container.add(border);
+        info_container.add(rect);
+
+        let mode_name = new Phaser.GameObjects.BitmapText(this, 400 - this.game_mode.mode_name.length * 20 - 16, 16, 'PixelFont', this.game_mode.mode_name, 20);
+        this.timer = new Phaser.GameObjects.BitmapText(this, 16, 16, 'PixelFont', this.game_mode.GetTime(), 30);
+        this.timer.setTint(0x5F574F)
+        this.points_text = new Phaser.GameObjects.BitmapText(this, 16, 80, 'PixelFont', `${this.points}p  ${this.eco_points}ep`, 20);
+
+        info_container.add(mode_name);
+        info_container.add(this.timer);
+        info_container.add(this.points_text);
+
+        this.tasks_container = this.add.container(0, 200);
+
+        let tasks_text = this.add.bitmapText(this.game.config.width - 200 - 8 - 2.5 * 20, 170, 'PixelFont', "TASKS\n-----", 20)
+        tasks_text.setTint(0x5F574F)
+
         
         // Input fields
-        const input_text = this.add.bitmapText(0, this.game.config.height - 20, 'PixelFont', '>', 20);
-        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 20, 'PixelFont', "", 20);
+        const input_text = this.add.bitmapText(0, this.game.config.height - 25, 'PixelFont', '>', 25);
+        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 25, 'PixelFont', "", 25);
 
         // Input field imput
         this.input.keyboard.on('keydown', event =>
@@ -47,6 +84,8 @@ export default class GameScene extends Phaser.Scene
                         this.RemoveTask();
                         this.MoveCursor(0);
                     }
+
+                    this.consecutive_fails += 1;
                 }
                 
                 input_field.text = "";
@@ -58,9 +97,12 @@ export default class GameScene extends Phaser.Scene
                 input_field.text += event.key;
         });
 
+        this.cameras.main.setPostPipeline(CRTShader);
 
-        this.cameras.main.setPostPipeline(PixelShader);
+    }
 
+    EndGame() {
+        this.scene.start("MenuScene");
     }
 
     // Move task cursor
@@ -68,21 +110,17 @@ export default class GameScene extends Phaser.Scene
         let list = this.tasks_container.list;
 
         // If element we're moving away from exists
-        if(list[this.cur_task]) {
+        if(list[this.cur_task] && list[this.cur_task].is_highlighted) {
             list[this.cur_task].list[0].fillColor = 0xfff1e8
             list[this.cur_task].x = this.game.config.width - 400 - 8;
-            if(list[this.cur_task].is_highlighted) {
-                list[this.cur_task].y += 25;
-                list[this.cur_task].is_highlighted = false;
-            }
+            list[this.cur_task].is_highlighted = false;
         }
 
         // If element we're moving to exists
         if(list[to]) {
             list[to].x = list[to].x - 50;
-            list[to].y = list[to].y - 25;
 
-            list[to].list[0].fillColor = 0xff003d;
+            list[to].list[0].fillColor = 0x00E436;
             
             list[to].is_highlighted = true;
         }
@@ -112,7 +150,7 @@ export default class GameScene extends Phaser.Scene
 
 
         // Container for individual task
-        let task = this.add.container(this.game.config.width - 400 - 8, (spot - 1) * 128 + 16 + spot * 16);
+        let task = this.add.container(this.game.config.width - 400 - 8, (spot - 1) * 128 + spot * 16);
         task.is_highlighted = false;
 
 
@@ -123,13 +161,6 @@ export default class GameScene extends Phaser.Scene
         let flight_text = new Phaser.GameObjects.BitmapText(this, 16, 16, 'PixelFont', `${flight_task.airliner}${flight_task.flight_number}`, 30);
         let airport_text = new Phaser.GameObjects.BitmapText(this, 16, flight_text.height + 16, 'PixelFont', `${flight_task.origin_airport} -> ${flight_task.destination_airport}`, 20);
         let task_text = new Phaser.GameObjects.BitmapText(this, 16,  128 - 30, 'PixelFont', `${flight_task.task.task_instruction}`, 16);
-
-
-        // Set text color
-        flight_text.setTint(0xfff1e8);
-        airport_text.setTint(0xfff1e8);
-        task_text.setTint(0xfff1e8);
-
 
         task.add(border);
         task.add(rect);

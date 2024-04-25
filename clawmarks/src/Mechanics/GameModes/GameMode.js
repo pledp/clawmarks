@@ -1,10 +1,11 @@
 export default class GameMode {
-    #mode_name;
-    #is_playing;
     #time;
     #game_end_text;
 
+    is_playing = false;
     tasks = [];
+
+    constructor() {}
     
     StartGame() {}
     Update() {}

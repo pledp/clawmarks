@@ -3,7 +3,7 @@ import LoginScene from "./Scenes/LoginScene.js"
 import MenuScene from "./Scenes/MenuScene.js"
 import TitleScene from "./Scenes/TitleScene.js"
 import Clawmarks from "./Clawmarks.js";
-import PixelShader from "../assets/shaders/GrayscaleShader.js"
+import CRTShader from "../assets/shaders/CRTShader.js";
 
 
 
@@ -20,7 +20,7 @@ const config = {
     },
     scene: [TitleScene, LoginScene, MenuScene, GameScene],
 
-    pipeline: { PixelShader }, 
+    pipeline: { CRTShader }, 
 
     pixelArt: true,
 };
