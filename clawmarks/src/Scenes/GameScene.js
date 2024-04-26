@@ -10,6 +10,12 @@ export default class GameScene extends Phaser.Scene
     }
 
     update(time, delta) {
+        this.blink_timer += delta / 1000;
+        if(this.blink_timer >= 1) {
+            this.text_cursor.visible = !this.text_cursor.visible;
+            this.blink_timer = 0;
+        }
+
         if(Phaser.Input.Keyboard.JustDown(this.up_key) && this.cur_task > 0) {
             this.MoveCursor(this.cur_task - 1);
         }
@@ -42,6 +48,8 @@ export default class GameScene extends Phaser.Scene
         this.points = 0;
         this.eco_points = 0;
 
+        this.blink_timer = 0;
+
 
         this.game_mode = new TimedGameMode(this.AddTaskWidget.bind(this));
         this.game_mode.StartGame();
@@ -70,8 +78,10 @@ export default class GameScene extends Phaser.Scene
 
         
         // Input fields
-        const input_text = this.add.bitmapText(0, this.game.config.height - 25, 'PixelFont', '>', 25);
-        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 25, 'PixelFont', "", 25);
+        const input_text = this.add.bitmapText(0, this.game.config.height - 26, 'PixelFont', '>', 25);
+        const input_field = this.add.bitmapText(input_text.width, this.game.config.height - 26, 'PixelFont', "", 25);
+
+        this.text_cursor = this.add.rectangle(input_field.x + input_field.width + 8, this.game.config.height - 13, 10, 25, 0xfff1e8, 1);
 
         // Input field imput
         this.input.keyboard.on('keydown', event =>
@@ -91,11 +101,16 @@ export default class GameScene extends Phaser.Scene
                 input_field.text = "";
             }
 
-            if (event.keyCode === 8 && input_field.text.length > 0)
+            if (event.keyCode === 8 && input_field.text.length > 0) 
                 input_field.text = input_field.text.substr(0, input_field.text.length - 1);
             else if (event.keyCode === 32 || (event.keyCode >= 48 && event.keyCode <= 90))
                 input_field.text += event.key;
+
+            this.text_cursor.x = input_field.x + input_field.width + 8;
+
         });
+
+
 
         this.cameras.main.setPostPipeline(CRTShader);
 

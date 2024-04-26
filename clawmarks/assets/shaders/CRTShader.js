@@ -19,38 +19,19 @@ const fragShader = `
         vec4 xoffs = offs * vec4(-2.0, -1.0, 1.0, 2.0) / uResolution.x;
         vec4 yoffs = offs * vec4(-2.0, -1.0, 1.0, 2.0) / uResolution.y;
         
-        // remember: GLSL is picky about casts, every # literal should be a float!  
         vec3 color = vec3(0.0, 0.0, 0.0);
     
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.00366;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.01465;
-        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.02564;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.01465;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.00366;
+        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.1;
     
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.y)) * 0.01465;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.y)) * 0.05861;
-        color += sample(tex,tc + vec2(    0.0, yoffs.y)) * 0.09524;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.y)) * 0.05861;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.y)) * 0.01465;
-    
-        color += sample(tex,tc + vec2(xoffs.x, 0.0)) * 0.02564;
-        color += sample(tex,tc + vec2(xoffs.y, 0.0)) * 0.09524;
-        color += sample(tex,tc + vec2(    0.0, 0.0)) * 0.15018;
-        color += sample(tex,tc + vec2(xoffs.z, 0.0)) * 0.09524;
-        color += sample(tex,tc + vec2(xoffs.w, 0.0)) * 0.02564;
-    
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.z)) * 0.01465;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.z)) * 0.05861;
-        color += sample(tex,tc + vec2(    0.0, yoffs.z)) * 0.09524;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.z)) * 0.05861;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.z)) * 0.01465;
-    
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.w)) * 0.00366;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.w)) * 0.01465;
-        color += sample(tex,tc + vec2(    0.0, yoffs.w)) * 0.02564;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.w)) * 0.01465;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.w)) * 0.00366;
+        color += sample(tex,tc + vec2(xoffs.x, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.y, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(    0.0, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.z, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.w, yoffs.y)) * 0.1;
     
         return color;
     }
