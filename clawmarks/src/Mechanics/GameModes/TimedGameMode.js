@@ -6,6 +6,7 @@ export default class TimedGameMode extends GameMode {
     constructor(widget_callback = null) {
         super();
 
+        this.letters = [];
         this.char_time = 0;
         this.cur_char_index = 0;
 
@@ -30,7 +31,7 @@ export default class TimedGameMode extends GameMode {
             this.add_task_time += delta / 1000;
             this.timer += delta / 1000;
 
-            if(this.timer > 300) {
+            if(this.timer > 2) {
                 this.is_finishing = true;
             }
                 
@@ -47,9 +48,12 @@ export default class TimedGameMode extends GameMode {
     }
 
     UpdateEndScene(scene, time, delta) {
+        let reg = new RegExp('^[0-9]+$');
+
+
+
         let end_text = `The game ended with ${scene.points} points.`;
         this.char_time += delta / 1000;
-
 
         if(this.char_time > 0.3) {
             if(this.cur_char_index >= end_text.length) {
@@ -58,14 +62,21 @@ export default class TimedGameMode extends GameMode {
                 }, [], this);
             }
             else {
-                if(this.cur_char_index == 0) {
-                    this.ending_text = scene.add.bitmapText(scene.game.config.width / 2 - (end_text.length / 2) * 26, scene.game.config.height / 2 - 13, 'PixelFont', "", 26);
+                let letter = scene.add.bitmapText(scene.game.config.width / 2 - (end_text.length / 2) * 26 + this.cur_char_index * 26, scene.game.config.height / 2 - 13, 'PixelFont', end_text[this.cur_char_index], 26);
+
+                if(reg.test(end_text[this.cur_char_index])) {
+                    letter.setTint(0x00E436);
                 }
 
-                this.ending_text.text += end_text[this.cur_char_index];
                 this.cur_char_index++;
                 this.char_time = 0;
+
+                this.letters.push(letter);
             }
+        }
+
+        for(let i = 0; i < this.letters.length; i++) {
+            this.letters[i].y = scene.game.config.height / 2 - 13 + Math.sin((time / 500) + i) * 20;
         }
     }
 

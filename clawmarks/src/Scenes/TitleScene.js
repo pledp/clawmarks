@@ -69,5 +69,10 @@ export default class TitleScene extends Phaser.Scene
         }
 
         this.cur_text = this.add.bitmapText(8, this.cur_text_index * (16 + 2) + 8, 'PixelFont', "", 16);
+
+        this.input.keyboard.on('keydown', event =>
+        {
+            this.scene.start("LoginScene");
+        });
     }
 }
