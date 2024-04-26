@@ -24,7 +24,7 @@ export default class GameScene extends Phaser.Scene
         }
 
         if(this.game_mode.is_playing) {
-            this.game_mode.Update(time, delta);
+            this.game_mode.Update(this, time, delta);
 
             this.timer.text = this.game_mode.GetTime();
             this.points_text.text = `${parseInt(this.points)}p   ${this.eco_points}ep`;
@@ -88,15 +88,7 @@ export default class GameScene extends Phaser.Scene
         {
             // Submit command
             if(event.keyCode === Phaser.Input.Keyboard.KeyCodes.ENTER) {
-
-                if(this.game_mode.tasks[this.cur_task]) {
-                    if(this.game_mode.tasks[this.cur_task].ValidateCommand(input_field.text)) {
-                        this.RemoveTask();
-                        this.MoveCursor(0);
-                    }
-
-                    this.consecutive_fails += 1;
-                }
+                this.HandleCommand(input_field.text);
                 
                 input_field.text = "";
             }
@@ -152,6 +144,28 @@ export default class GameScene extends Phaser.Scene
         
         for(let i = this.cur_task; i < list.length; i++) {
             list[i].y -= 128 + 16;
+        }
+    }
+
+    HandleCommand(command) {
+        if(this.game_mode.tasks[this.cur_task]) {
+            if(this.game_mode.tasks[this.cur_task].ValidateCommand(command)) {
+                this.RemoveTask();
+                this.MoveCursor(0);
+                this.game_mode.OnCompletion();
+            }
+
+            // On fail
+            else {
+                this.consecutive_fails += 1;
+                this.game_mode.OnFail();
+            }
+
+            // On crash
+            if(this.consecutive_fails >= 3) {
+                this.game_mode.OnCrash();
+                this.consecutive_fails = 0;
+            }
         }
     }
 

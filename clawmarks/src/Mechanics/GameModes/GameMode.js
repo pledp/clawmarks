@@ -8,7 +8,7 @@ export default class GameMode {
     constructor() {}
     
     StartGame() {}
-    Update() {}
+    Update(scene, time, delta) {}
     AddTask() {}
     OnCrash() {}
     OnFail() {}
