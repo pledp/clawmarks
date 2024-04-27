@@ -27,7 +27,7 @@ const config = {
 
 // Set game config (Debug mode etc)
 Clawmarks.SetConfig({
-    Debug: false,
+    Debug: true,
 });
 
 const game = new Phaser.Game(config);

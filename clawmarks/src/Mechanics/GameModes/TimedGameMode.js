@@ -31,7 +31,8 @@ export default class TimedGameMode extends GameMode {
             this.add_task_time += delta / 1000;
             this.timer += delta / 1000;
 
-            if(this.timer > 2) {
+            // End game at 5 minutes
+            if(this.timer > 300) {
                 this.is_finishing = true;
             }
                 

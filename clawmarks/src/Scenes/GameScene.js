@@ -33,8 +33,48 @@ export default class GameScene extends Phaser.Scene
             this.EndGame();
     }
 
+    preload() {
+        this.load.image('map', "assets/world-map.jpg");
+    }
+
     create ()
     {
+        const map = this.add.sprite(32, 32, 'map').setOrigin(0,0);
+        map.scale = 0.7;
+
+        let pixel_x = (10.90 + 180) * (map.displayWidth / 360);
+        let pixel_y = map.displayHeight - ((63.44 + 90) * (map.displayHeight / 180));
+        
+        let pixel_x2 = (-118.24 + 180) * (map.displayWidth / 360);
+        let pixel_y2 = map.displayHeight - ((34.05 + 90) * (map.displayHeight / 180));
+
+        this.add.rectangle(32 + (Math.floor(pixel_x2 / 20) * 20), 32 + map.displayHeight / 2, 30, map.displayHeight, 0xFF004D, 0.5);
+        this.add.rectangle(32 + map.displayWidth / 2, 32 + (Math.floor(pixel_y2 / 20) * 20), map.displayWidth, 30, 0xFF004D, 0.5);
+
+        const pin = this.add.rectangle(32 + this.SnapToGrid(pixel_x, 20), 32 + this.SnapToGrid(pixel_y, 20), 20, 20, 0x000000, 1);
+        const pin2 = this.add.rectangle(32 + this.SnapToGrid(pixel_x2, 20), 32 + this.SnapToGrid(pixel_y2, 20), 20, 20, 0x000000, 1);
+        let pixel_x3 = (pixel_x - pixel_x2);
+        let pixel_y3 = (pixel_y - pixel_y2);
+
+
+        const startPoint = new Phaser.Math.Vector2(pixel_x2, pixel_y2);
+        const controlPoint1 = new Phaser.Math.Vector2(pixel_x2 + (pixel_x3 * 0.3), pixel_y2 + (pixel_y3 * 0.3) - 100);
+        const controlPoint2 = new Phaser.Math.Vector2(pixel_x2 + (pixel_x3 * 0.6), pixel_y2 + (pixel_y3 * 0.6) - 100);
+
+        const endPoint = new Phaser.Math.Vector2(pixel_x, pixel_y);
+
+        const curve = new Phaser.Curves.CubicBezier(startPoint, controlPoint1, controlPoint2, endPoint);
+        const pointOnCurve = new Phaser.Math.Vector2();
+
+
+        curve.getPoint(0.5, pointOnCurve);
+        console.log(pointOnCurve);
+
+
+        const pin3 = this.add.rectangle(32 + this.SnapToGrid(pointOnCurve.x, 20), 32 + this.SnapToGrid(pointOnCurve.y, 20), 20, 20, 0x000000, 1);
+
+
+
 
         
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -218,5 +258,9 @@ export default class GameScene extends Phaser.Scene
         }
 
         this.padding += 16
+    }
+
+    SnapToGrid(pixel, grid_element_size, padding = 0) {
+        return (Math.floor((pixel / grid_element_size) + padding) * grid_element_size)
     }
 }
