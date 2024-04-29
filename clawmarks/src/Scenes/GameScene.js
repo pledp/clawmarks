@@ -1,5 +1,6 @@
 import CRTShader from "../../assets/shaders/CRTShader.js";
 import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js"
+import FlightPing from "../UI/MapPin.js"
 
 
 export default class GameScene extends Phaser.Scene
@@ -39,39 +40,23 @@ export default class GameScene extends Phaser.Scene
 
     create ()
     {
-        const map = this.add.sprite(32, 32, 'map').setOrigin(0,0);
-        map.scale = 0.7;
+        this.map = this.add.sprite(0, 0, 'map').setOrigin(0,0);
+        this.map.scale = 0.7;
 
-        let pixel_x = (10.90 + 180) * (map.displayWidth / 360);
-        let pixel_y = map.displayHeight - ((63.44 + 90) * (map.displayHeight / 180));
-        
-        let pixel_x2 = (-118.24 + 180) * (map.displayWidth / 360);
-        let pixel_y2 = map.displayHeight - ((34.05 + 90) * (map.displayHeight / 180));
+        this.airport_pins = [];
 
-        this.add.rectangle(32 + (Math.floor(pixel_x2 / 20) * 20), 32 + map.displayHeight / 2, 30, map.displayHeight, 0xFF004D, 0.5);
-        this.add.rectangle(32 + map.displayWidth / 2, 32 + (Math.floor(pixel_y2 / 20) * 20), map.displayWidth, 30, 0xFF004D, 0.5);
+        let home_x = 10.90;
+        let home_y = 63.44;
+        this.home_x = (home_x + 180) * (this.map.displayWidth / 360);
+        this.home_y = this.map.displayHeight - ((home_y + 90) * (this.map.displayHeight / 180));
 
-        const pin = this.add.rectangle(32 + this.SnapToGrid(pixel_x, 20), 32 + this.SnapToGrid(pixel_y, 20), 20, 20, 0x000000, 1);
-        const pin2 = this.add.rectangle(32 + this.SnapToGrid(pixel_x2, 20), 32 + this.SnapToGrid(pixel_y2, 20), 20, 20, 0x000000, 1);
-        let pixel_x3 = (pixel_x - pixel_x2);
-        let pixel_y3 = (pixel_y - pixel_y2);
+        this.AddAirportPin(home_x, home_y);
+        this.AddAirportPin(-118.24, 34.05, true);
 
 
-        const startPoint = new Phaser.Math.Vector2(pixel_x2, pixel_y2);
-        const controlPoint1 = new Phaser.Math.Vector2(pixel_x2 + (pixel_x3 * 0.3), pixel_y2 + (pixel_y3 * 0.3) - 100);
-        const controlPoint2 = new Phaser.Math.Vector2(pixel_x2 + (pixel_x3 * 0.6), pixel_y2 + (pixel_y3 * 0.6) - 100);
 
-        const endPoint = new Phaser.Math.Vector2(pixel_x, pixel_y);
-
-        const curve = new Phaser.Curves.CubicBezier(startPoint, controlPoint1, controlPoint2, endPoint);
-        const pointOnCurve = new Phaser.Math.Vector2();
-
-
-        curve.getPoint(0.5, pointOnCurve);
-        console.log(pointOnCurve);
-
-
-        const pin3 = this.add.rectangle(32 + this.SnapToGrid(pointOnCurve.x, 20), 32 + this.SnapToGrid(pointOnCurve.y, 20), 20, 20, 0x000000, 1);
+        //this.add.rectangle(32 + (Math.floor(pixel_x2 / 20) * 20), 32 + this.map.displayHeight / 2, 30, this.map.displayHeight, 0xFF004D, 0.5);
+        //this.add.rectangle(32 + this.map.displayWidth / 2, 32 + (Math.floor(pixel_y2 / 20) * 20), this.map.displayWidth, 30, 0xFF004D, 0.5);
 
 
 
@@ -94,7 +79,7 @@ export default class GameScene extends Phaser.Scene
         this.game_mode = new TimedGameMode(this.AddTaskWidget.bind(this));
         this.game_mode.StartGame();
 
-        let info_container = this.add.container(this.game.config.width - 400 - 8, 16);
+        let info_container = this.add.container(this.game.config.width - (this.game.config.width - this.map.displayWidth) + ((this.game.config.width - this.map.displayWidth - 400) / 2), 16);
 
         let border = new Phaser.GameObjects.Rectangle(this, 200, 64, 400, 128, 0xC2C3C7, 1);
         let rect = new Phaser.GameObjects.Rectangle(this, 200, 64, 390, 118, 0x000000, 1);
@@ -113,7 +98,7 @@ export default class GameScene extends Phaser.Scene
 
         this.tasks_container = this.add.container(0, 200);
 
-        let tasks_text = this.add.bitmapText(this.game.config.width - 200 - 8 - 2.5 * 20, 170, 'PixelFont', "TASKS\n-----", 20)
+        let tasks_text = this.add.bitmapText(this.game.config.width - (this.game.config.width - this.map.displayWidth) + ((this.game.config.width - this.map.displayWidth) / 2) - 2.5 * 20, 170, 'PixelFont', "TASKS\n-----", 20)
         tasks_text.setTint(0x5F574F)
 
         
@@ -159,7 +144,7 @@ export default class GameScene extends Phaser.Scene
         // If element we're moving away from exists
         if(list[this.cur_task] && list[this.cur_task].is_highlighted) {
             list[this.cur_task].list[0].fillColor = 0xfff1e8
-            list[this.cur_task].x = this.game.config.width - 400 - 8;
+            list[this.cur_task].x = this.game.config.width - (this.game.config.width - this.map.displayWidth) + ((this.game.config.width - this.map.displayWidth - 400) / 2);
             list[this.cur_task].is_highlighted = false;
         }
 
@@ -219,13 +204,14 @@ export default class GameScene extends Phaser.Scene
 
 
         // Container for individual task
-        let task = this.add.container(this.game.config.width - 400 - 8, (spot - 1) * 128 + spot * 16);
+        console.log(this.game.config.width - (this.game.config.width - this.map.displayWidth))
+        let task = this.add.container(this.game.config.width - (this.game.config.width - this.map.displayWidth) + ((this.game.config.width - this.map.displayWidth - 400) / 2), (spot - 1) * 128 + spot * 16);
         task.is_highlighted = false;
 
 
         // Background for task
-        let border = new Phaser.GameObjects.Rectangle(this, 200, 64, 400, 128, 0xfff1e8, 1);
-        let rect = new Phaser.GameObjects.Rectangle(this, 200, 64, 390, 118, 0x000000, 1);
+        let border = new Phaser.GameObjects.Rectangle(this, 0, 0, 400, 128, 0xfff1e8, 1).setOrigin(0, 0);
+        let rect = new Phaser.GameObjects.Rectangle(this, 5, 5, 390, 118, 0x000000, 1).setOrigin(0, 0);
 
         let flight_text = new Phaser.GameObjects.BitmapText(this, 16, 16, 'PixelFont', `${flight_task.airliner}${flight_task.flight_number}`, 30);
         let airport_text = new Phaser.GameObjects.BitmapText(this, 16, flight_text.height + 16, 'PixelFont', `${flight_task.origin_airport} -> ${flight_task.destination_airport}`, 20);
@@ -262,5 +248,32 @@ export default class GameScene extends Phaser.Scene
 
     SnapToGrid(pixel, grid_element_size, padding = 0) {
         return (Math.floor((pixel / grid_element_size) + padding) * grid_element_size)
+    }
+
+    AddAirportPin(lat, lon, draw_flight = false) {
+        let pixel_x = (lat + 180) * (this.map.displayWidth / 360);
+        let pixel_y = this.map.displayHeight - ((lon + 90) * (this.map.displayHeight / 180));
+
+        const pin = this.add.rectangle(this.SnapToGrid(pixel_x, 20), this.SnapToGrid(pixel_y, 20), 20, 20, 0x000000, 1);
+
+        if(draw_flight) {
+            let flight_x = (this.home_x - pixel_x);
+            let flight_y = (this.home_y - pixel_y);
+
+
+            const startPoint = new Phaser.Math.Vector2(pixel_x, pixel_y);
+            const controlPoint1 = new Phaser.Math.Vector2(pixel_x + (flight_x * 0.3), pixel_y + (flight_y * 0.3) - 100);
+            const controlPoint2 = new Phaser.Math.Vector2(pixel_x + (flight_x * 0.6), pixel_y + (flight_y * 0.6) - 100);
+
+            const endPoint = new Phaser.Math.Vector2(this.home_x, this.home_y);
+
+            const curve = new Phaser.Curves.CubicBezier(startPoint, controlPoint1, controlPoint2, endPoint);
+            const pointOnCurve = new Phaser.Math.Vector2();
+
+
+            curve.getPoint(0.2, pointOnCurve);
+            console.log(pointOnCurve.x, pointOnCurve.y)
+            const flight_pin = this.add.rectangle(this.SnapToGrid(pointOnCurve.x, 20), this.SnapToGrid(pointOnCurve.y, 20), 20, 20, 0x000000, 1);
+        }
     }
 }

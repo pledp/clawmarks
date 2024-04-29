@@ -4,9 +4,10 @@ export default class Button {
         this.callback = callback;
     }
 
-    create(scene, x, y, font_size) {
+    create(scene, x, y, font_size, color = 0xffffff) {
         // Draw button and make it interactive
         let buttonImage = scene.add.bitmapText(x, y, "PixelFont", this.text, font_size);
+        buttonImage.setTint(color);
         buttonImage.setInteractive();
 
         buttonImage.on("pointerdown", () => {
