@@ -8,6 +8,8 @@ export class Task {
 
     constructor() {
         this.print_task = "";
+        this.points_to_award = Math.floor(Math.random() * 3) + 1
+
     }
 
     // Validate input command, check if it is correct

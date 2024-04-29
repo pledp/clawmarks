@@ -128,9 +128,7 @@ export default class GameScene extends Phaser.Scene
         });
 
 
-
         this.cameras.main.setPostPipeline(CRTShader);
-
     }
 
     EndGame() {
@@ -217,11 +215,15 @@ export default class GameScene extends Phaser.Scene
         let airport_text = new Phaser.GameObjects.BitmapText(this, 16, flight_text.height + 16, 'PixelFont', `${flight_task.origin_airport} -> ${flight_task.destination_airport}`, 20);
         let task_text = new Phaser.GameObjects.BitmapText(this, 16,  128 - 30, 'PixelFont', `${flight_task.task.task_instruction}`, 16);
 
+        let point_text = new Phaser.GameObjects.BitmapText(this, 400 - (flight_task.task.points_to_award.toString().length + 2) * 16, 16, 'PixelFont', `${flight_task.task.points_to_award}p`, 16);
+
+
         task.add(border);
         task.add(rect);
         task.add(flight_text);
         task.add(airport_text);
         task.add(task_text);
+        task.add(point_text);
 
         if(spot != null)
             this.tasks_container.addAt(task, spot);

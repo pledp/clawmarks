@@ -21,11 +21,17 @@ const fragShader = `
         
         vec3 color = vec3(0.0, 0.0, 0.0);
     
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.2;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.2;
-        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.2;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.2;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.2;
+        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.1;
+    
+        color += sample(tex,tc + vec2(xoffs.x, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.y, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(    0.0, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.z, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.w, yoffs.y)) * 0.1;
     
         return color;
     }
@@ -58,7 +64,6 @@ const fragShader = `
         col.b += ghs*(1.0-0.114)*blur(uMainSampler,0.75*vec2(x+-0.02, -0.0)+vec2(uv.x-0.002,uv.y+0.000),3.0).z;
         col = clamp(col*0.4+0.6*col*col*1.0,0.0,1.0);
         col *= vec3(0.95,1.05,0.95);
-        col = mix( col, col * col, 0.3) * 3.8;
         col *= 1.0+0.0015*sin(300.0*uTime);
         col*=1.0-0.15*vec3(clamp((mod(gl_FragCoord.x+o, 2.0)-1.0)*2.0,0.0,1.0));
         col *= vec3( 1.0 ) - 0.25*vec3( rand( uv+0.0001*uTime),  rand( uv+0.0001*uTime + 0.3 ),  rand( uv+0.0001*uTime+ 0.5 )  );

@@ -45,6 +45,7 @@ export default class MenuScene extends Phaser.Scene
         this.options_button.create(this, 64, 464, 30, 0x7E2553);
         this.login_button.create(this, 64, 564, 30, 0x7E2553);
 
-        
+        this.cameras.main.setPostPipeline(CRTShader);
+
     }
 }
