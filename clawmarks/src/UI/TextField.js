@@ -1,13 +1,25 @@
 export default class TextField {
     static active = null;
 
-    constructor(text) {
+    constructor(text = "", write_callback = null, new_field_callback = null) {
         this.text = text;
+        
+        if(write_callback)
+            this.write_callback = write_callback;
+
+        if(new_field_callback)
+            this.new_field_callback = new_field_callback;
     }
 
     create(scene, x, y, font_size) {
+        this.hitbox = scene.add.rectangle(x - 8, y - 8, Math.max(this.text.length * font_size, 128) + 8, font_size + 8, 0x5f574f, 0.5).setOrigin(0, 0);
+        this.hitbox.setInteractive();
+
+
         // Draw button and make it interactive
+
         this.text_field = scene.add.bitmapText(x, y, "PixelFont", this.text, font_size);
+        this.text_field.setInteractive();
 
         scene.input.keyboard.on('keydown', event =>
         {
@@ -23,13 +35,30 @@ export default class TextField {
                     this.text += event.key;
 
                 this.text_field.text = this.text;
+
+                if(this.write_callback)
+                    this.write_callback(this);
+
+                this.hitbox.displayWidth = Math.max(this.text.length * font_size, 128) + 8;
             }
         });
 
-        this.text_field.setInteractive();
+        
+        this.hitbox.on("pointerdown", () => {
+            this.ChangeActiveField();
+        });
 
         this.text_field.on("pointerdown", () => {
-            TextField.active = this;
+            this.ChangeActiveField();
         });
+    }
+
+    ChangeActiveField() {
+        this.new_field_callback(this);
+
+        if(TextField.active)
+            TextField.active.hitbox.fillColor = 0x5f574f;
+        TextField.active = this;
+        this.hitbox.fillColor = 0x008751;
     }
 }
