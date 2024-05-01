@@ -1,12 +1,22 @@
 // Abstract base for task 
+export const Types = {
+    Fire: "fire",
+    Landing: "landing",
+    Takeoff: "takeoff",
+    Heading: "heading",
+    Altitude: "altitude",
+}
+
 export class Task {
+
+    type;
     #task_complete_text;
     #correct_command;
     #correct_value;
-    #task_instruction;
+    task_instruction;
     #task_on_completion;
 
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         this.print_task = "";
         this.points_to_award = Math.floor(Math.random() * 3) + 1
 
@@ -19,11 +29,22 @@ export class Task {
         return this.#task_complete_text;
     }
     OnCompletion() {};
+
+    GetHeader() {
+        return "";
+    }
+    GetSecondHeader() {
+        return "";
+    }
+    GetDescription() {
+        return "";
+    }
 }
 
 export class FireTask extends Task {
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         super();
+        this.type = Types.Fire;
 
         this.correct_command = "fire";
 
@@ -42,11 +63,20 @@ export class FireTask extends Task {
         else 
             return false;
     }
+
+    GetHeader() {
+        return "FIRE";
+    }
+    GetDescription() {
+        return this.task_instruction;
+    }
 }
 
 export class AltitudeTask extends Task {
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         super();
+        this.type = Types.Altitude;
+
 
         this.correct_command = "altitude";
 
@@ -67,8 +97,9 @@ export class AltitudeTask extends Task {
 }
 
 export class HeadingTask extends Task {
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         super();
+        this.type = Types.Heading;
 
         this.correct_command = "heading";
 
@@ -89,8 +120,10 @@ export class HeadingTask extends Task {
 }
 
 export class LandingTask extends Task {
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         super();
+        this.type = Types.Landing;
+
         let random_value = Math.round(Math.random());
 
         this.correct_command = "landing";
@@ -129,8 +162,11 @@ export class LandingTask extends Task {
 }
 
 export class TakeoffTask extends Task {
-    constructor() {
+    constructor(on_completion_callback = undefined) {
         super();
+        this.type = Types.Takeoff;
+
+
         let random_value = Math.round(Math.random());
 
         this.correct_command = "takeoff";

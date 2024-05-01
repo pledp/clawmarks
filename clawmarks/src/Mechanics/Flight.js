@@ -24,6 +24,8 @@ export default class Flight extends Task {
             let random_task = Math.floor(Math.random() * Flight.available_tasks.length);
             this.task = new Flight.available_tasks[random_task]();
         }
+
+        this.type = this.task.type;
         
         let random_airport = Math.round(Math.random());
         
@@ -42,11 +44,11 @@ export default class Flight extends Task {
         }
 
         this.task_complete_text = this.airliner + this.flight_number + this.task.task_complete_text;
-        this.print_task = `* ${this.airliner}${this.flight_number} - ${this.origin_airport} -> ${this.destination_airport} - ${this.task.task_instruction}`;
+        this.task_instruction = this.task.task_instruction;
+        this.points_to_award = this.task.points_to_award;
     }
 s
     ValidateCommand(command) {
-        console.log(command);
         // Check flight number and pass rest of command to task
         return command.substring(0, command.indexOf(' ')) && this.task.ValidateCommand(command.substring(command.indexOf(' ') + 1));
     }
@@ -54,4 +56,15 @@ s
     OnCompletion() {
         this.task.OnCompletion();
     }
+
+    GetHeader() {
+        return `${this.airliner}${this.flight_number}`;
+    }
+    GetSecondHeader() {
+        return `${this.origin_airport} -> ${this.destination_airport}`;
+    }
+    GetDescription() {
+        return this.task.task_instruction;
+    }
+
 }

@@ -12,7 +12,7 @@ export default class GameMode {
     AddTask() {}
     OnCrash() {}
     OnFail() {}
-    OnCompletion() {}
+    OnCompletion(task) {}
 
     GetTime() {}
     GetMode() {}

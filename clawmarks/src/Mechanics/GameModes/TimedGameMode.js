@@ -1,9 +1,11 @@
 import GameMode from "./GameMode.js"
 import Flight from "../Flight.js"
+import { FireTask } from "../Tasks.js";
+import LogItem from "../../UI/LogItem.js";
 
 export default class TimedGameMode extends GameMode {
 
-    constructor(widget_callback = null) {
+    constructor(widget_callback = null, log_callback = null) {
         super();
 
         this.letters = [];
@@ -11,7 +13,9 @@ export default class TimedGameMode extends GameMode {
         this.cur_char_index = 0;
 
         this.add_task_time = 0;
+
         this.widget_callback = widget_callback;
+        this.log_callback = log_callback;
 
         this.random_time = Math.floor(Math.random() * 6) + 3;
         this.timer = 0;
@@ -39,7 +43,7 @@ export default class TimedGameMode extends GameMode {
 
             if(this.add_task_time >= this.random_time) {
                 if(this.tasks.length < 6)
-                    this.AddTask(0);
+                    this.AddTask();
                 this.add_task_time = 0;
             }
         }
@@ -81,13 +85,15 @@ export default class TimedGameMode extends GameMode {
         }
     }
 
-    AddTask(spot = null) {
+    AddTask(force_task = undefined, spot = undefined) {
         if(spot != null) 
-            this.tasks.splice(spot, 0, Flight.CreateFlight());
+            this.tasks.splice(spot, 0, Flight.CreateFlight(force_task));
         else 
-            this.tasks.push(Flight.CreateFlight());
+            this.tasks.push(Flight.CreateFlight(force_task));
 
         this.widget_callback(spot);
+
+        this.random_time = Math.floor(Math.random() * 6) + 3;
     }
 
     GetTime() {
@@ -99,8 +105,12 @@ export default class TimedGameMode extends GameMode {
         return `${text}${(this.timer % 60).toFixed(2)}`;
     }
 
-    OnCrash() {
-        this.is_finishing = true;
-        
+    OnCompletion(task) {
+        if(Math.random() > 0.80) {
+            this.log_callback(new LogItem("A fire has broken out!", 0xFF004D));
+            this.tasks.splice(0, 0, new FireTask())
+
+            this.widget_callback(0);
+        }
     }
 }
