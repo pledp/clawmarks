@@ -1,7 +1,7 @@
 import CRTShader from "../../assets/shaders/CRTShader.js";
 import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js"
 import FlightPin from "../UI/FlightPin.js"
-import Flight from "../Mechanics/Flight.js";
+import { Types } from "../Mechanics/Tasks.js"
 import LogItem from "../UI/LogItem.js"
 
 import { Vector2 } from "../Clawmarks.js";
@@ -201,11 +201,20 @@ export default class GameScene extends Phaser.Scene
             }
 
             // On crash
-            if(this.consecutive_fails >= 3) {
-                this.Log(new LogItem("CRASH!", 0xFF004D));
+            if(this.num_of_fails >= 3) {
+                switch(this.game_mode.tasks[this.cur_task].type) {
+                    case Types.Fire:
+                        this.Log(new LogItem("HEL'S FIRE HAS SPREAD.", 0xFF004D));
+                        this.points -= 10;
+                        break;
+                    default:
+                        this.Log(new LogItem("CRASH!", 0xFF004D));
+                        this.points -= 3;
+                        break;
+                }
+
                 this.RemoveTask();
 
-                this.points -= 3;
                 this.eco_points += 1;
 
                 this.game_mode.OnCrash();
