@@ -39,6 +39,15 @@ const fragShader = `
     float rand(vec2 co){
         return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
     }
+
+    vec2 curveRemapUV(vec2 uv){
+        // as we near the edge of our screen apply greater distortion using a cubic function
+        uv = uv * 2.0 - 1.0;
+        vec2 offset = abs(uv.yx) / vec2(8.0, 8.0);
+        uv = uv + uv * offset * offset;
+        uv = uv * 0.5 + 0.5;
+        return uv;
+    }
     
     void main(void) {
         vec2 q = gl_FragCoord.xy / uResolution.xy;
@@ -46,6 +55,9 @@ const fragShader = `
         vec3 oricol = texture2D( uMainSampler, vec2(q.x,q.y) ).xyz;
         float orialpha = texture2D( uMainSampler, vec2(q.x,q.y) ).a;
         vec3 col;
+
+        uv = curveRemapUV(vec2(uv.x, uv.y));
+
         // warbley in X
         float x = sin(0.1*uTime+uv.y*21.0)*sin(0.23*uTime+uv.y*29.0)*sin(0.3+0.11*uTime+uv.y*31.0)*0.0017;
         // tone it waay down
@@ -73,6 +85,7 @@ const fragShader = `
         if (uv.y < 0.0 || uv.y > 1.0)
             col *= 0.0;
         // improvise alpha based on source + intensity
+
         orialpha += (col.r + col.g + col.b) / 3.0;
         gl_FragColor = vec4(col,orialpha);
     }
@@ -91,14 +104,14 @@ export default class CRTShader extends Phaser.Renderer.WebGL.Pipelines.PostFXPip
                 'uProjectionMatrix',
                 'uMainSampler',
                 'uTime',
-                'uuResolution'
+                'uResolution'
             ]
         });
     }
 
     onBoot ()
     {
-        this.set2f('uuResolution', this.renderer.width, this.renderer.height);
+        this.set2f('uResolution', this.renderer.width, this.renderer.height);
     }
 
     onPreRender ()

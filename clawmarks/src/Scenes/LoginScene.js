@@ -79,10 +79,10 @@ export default class LoginScene extends Phaser.Scene
 
         this.login_button = new Button("LOGIN >", () => {
             this.scene.start("MenuScene");
-        });
+        }, this.HoverMenuItem.bind(this));
         this.register_button = new Button("REGISTER @", () => {
             this.scene.start("MenuScene");
-        });
+        }, this.HoverMenuItem.bind(this));
 
         this.login_field = new TextField(undefined, this.UpdateCursor.bind(this), this.NewField.bind(this));
         this.register_field = new TextField(undefined, this.UpdateCursor.bind(this), this.NewField.bind(this));
@@ -107,6 +107,8 @@ export default class LoginScene extends Phaser.Scene
             16
         )
 
+        this.cursor = this.add.bitmapText(64 - 30, 114, 'PixelFont', ">", 30);
+
         this.cameras.main.setPostPipeline(CRTShader);
     }
 
@@ -117,5 +119,12 @@ export default class LoginScene extends Phaser.Scene
 
     UpdateCursor(field) {
         this.text_cursor.x = field.text_field.x + field.text_field.width + 8;
+    }
+
+    HoverMenuItem(item) {
+        this.cursor.y = item.button_field.y;
+        this.cursor.x = item.button_field.x - item.button_field.fontSize;
+
+        this.cursor.fontSize = item.button_field.fontSize;
     }
 }
