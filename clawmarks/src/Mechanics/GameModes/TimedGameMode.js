@@ -85,11 +85,14 @@ export default class TimedGameMode extends GameMode {
         }
     }
 
-    AddTask(force_task = undefined, spot = undefined) {
+    async AddTask(force_task = undefined, spot = undefined) {
+
+        let flight = await Flight.CreateFlight(force_task);
+
         if(spot != null) 
-            this.tasks.splice(spot, 0, Flight.CreateFlight(force_task));
+            this.tasks.splice(spot, 0, flight);
         else 
-            this.tasks.push(Flight.CreateFlight(force_task));
+            this.tasks.push(flight);
 
         this.widget_callback(spot);
 

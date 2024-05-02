@@ -8,53 +8,64 @@ export default class Flight extends Task {
     static airliners = ["AX", "AY"];
     static available_tasks = [AltitudeTask, HeadingTask, TakeoffTask, LandingTask];
 
-    static CreateFlight(force_task = null) {
-        return new Flight(force_task);
-    }
+    static async CreateFlight(force_task = null) {
+        let flight = new Flight();
 
-    constructor(force_task = null) {
-        super();
+        flight.airliner = this.airliners[Math.floor(Math.random() * Flight.airliners.length)]
+        flight.flight_number = Math.floor(Math.random() * 9999) + 100
 
-        this.airliner = Flight.airliners[Math.round(Math.random())];
-        this.flight_number = Math.floor(Math.random() * 999) + 100;
+        const response = await fetch(`http://127.0.0.1:3000/RandomAirport`);
+        let random_airport = await response.json();
+        
+        flight.lat = random_airport.lat;
+        flight.lon = random_airport.lon;
         
         if(force_task) 
-            this.task = new force_task();
+            flight.task = new force_task();
         else {
             let random_task = Math.floor(Math.random() * Flight.available_tasks.length);
-            this.task = new Flight.available_tasks[random_task]();
+            flight.task = new Flight.available_tasks[random_task]();
         }
 
-        this.type = this.task.type;
+        flight.type = flight.task.type;
         
-        let random_airport = Math.round(Math.random());
+        let random = Math.round(Math.random());
         
-        if(this.task instanceof TakeoffTask)
-            random_airport = 0;
-        else if (this.task instanceof LandingTask) 
-            random_airport = 1;
+        if(flight.task instanceof TakeoffTask)
+            random = 0;
+        else if (flight.task instanceof LandingTask) 
+            random = 1;
 
-        if(random_airport == 0) {
-            this.origin_airport = "HEL";
-            this.destination_airport = "SOME";
+        if(random == 0) {
+            flight.origin_airport = "HEL";
+            flight.destination_airport = random_airport.icao;
         }
         else {
-            this.origin_airport = "SOME";
-            this.destination_airport = "HEL";
+            flight.origin_airport = random_airport.icao;
+            flight.destination_airport = "HEL";
         }
 
-        this.task_complete_text = this.airliner + this.flight_number + this.task.task_complete_text;
-        this.task_instruction = this.task.task_instruction;
-        this.points_to_award = this.task.points_to_award;
+        flight.task_complete_text = flight.airliner + flight.flight_number + flight.task.task_complete_text;
+        flight.task_instruction = flight.task.task_instruction;
+        flight.points_to_award = flight.task.points_to_award;
+
+        return flight;
     }
-s
+
+    constructor() {
+        super();
+    }
+
     ValidateCommand(command) {
         // Check flight number and pass rest of command to task
         return command.substring(0, command.indexOf(' ')) && this.task.ValidateCommand(command.substring(command.indexOf(' ') + 1));
     }
 
+
+
     OnCompletion() {
         this.task.OnCompletion();
+        
     }
 
     GetHeader() {

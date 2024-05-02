@@ -53,7 +53,7 @@ export default class GameScene extends Phaser.Scene
     }
 
     preload() {
-        this.load.image('map', "assets/world-map.jpg");
+        this.load.image('map', "assets/world-map.png");
     }
 
     create ()
@@ -62,7 +62,7 @@ export default class GameScene extends Phaser.Scene
         this.t = 0
 
         this.map = this.add.sprite(0, 0, 'map').setOrigin(0,0);
-        this.map.scale = 0.7;
+        this.map.scale = 4.66666666667;
 
         this.airport_pins = [];
 
@@ -71,8 +71,8 @@ export default class GameScene extends Phaser.Scene
         this.home_x = (home_x + 180) * (this.map.displayWidth / 360);
         this.home_y = this.map.displayHeight - ((home_y + 90) * (this.map.displayHeight / 180));
 
-        this.cursor_x = this.add.rectangle((Math.floor(this.home_x / 20) * 20), this.map.displayHeight / 2, 30, this.map.displayHeight, 0xFF004D, 0.5);
-        this.cursor_y = this.add.rectangle(this.map.displayWidth / 2, (Math.floor(this.home_y / 20) * 20), this.map.displayWidth, 30, 0xFF004D, 0.5);
+        this.cursor_x = this.add.rectangle((Math.floor(this.home_x / 20) * 20), this.map.displayHeight / 2, 30, this.map.displayHeight, 0xFF004D, 0.7);
+        this.cursor_y = this.add.rectangle(this.map.displayWidth / 2, (Math.floor(this.home_y / 20) * 20), this.map.displayWidth, 30, 0xFF004D, 0.7);
 
         this.AddAirportPin(home_x, home_y);
         this.AddAirportPin(-118.24, -60.05, true);
