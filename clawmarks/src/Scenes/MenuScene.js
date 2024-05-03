@@ -19,7 +19,7 @@ export default class MenuScene extends Phaser.Scene
 
     update() {        
         // Add random buggy text to the screen
-        if(Math.random() <= 0.001) {
+        if(Math.random() <= 0.001 && this.lag_texts.length < 50) {
             this.border.x += 20;
 
             for(let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
@@ -42,7 +42,7 @@ export default class MenuScene extends Phaser.Scene
                         this.lag_texts[i].x += 100;
                         break;
                     case 1:
-                        this.lag_texts[i].visible = !this.lag_texts[i].visible;
+                        this.lag_texts[i].destroy();
                         break;
                     case 2:
                         this.lag_texts[i].y -= 100; 
@@ -52,6 +52,12 @@ export default class MenuScene extends Phaser.Scene
 
                 }
             }
+        }
+        if(Math.random() <= 0.00001) {
+            for(let i = 0; i < this.lag_texts.length; i++) {
+                this.lag_texts[i].destroy();
+            }
+            this.lag_texts = [];
         }
     }
 

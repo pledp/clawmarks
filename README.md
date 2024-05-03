@@ -3,12 +3,15 @@ It's never a slow day in HEL!
 
 # How to run:
 Required libraries:
+- Flask
+- Flask-CORS
 
 Start up Flask server:
 ```
 python clawmarks/scripts/Server.py
 ```
 
+Open website:
 ```
 clawmarks/index.html
 ```
