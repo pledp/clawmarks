@@ -19,7 +19,7 @@ export class Task {
     constructor(on_completion_callback = undefined) {
         this.print_task = "";
         this.points_to_award = Math.floor(Math.random() * 3) + 1
-
+        this.draw_pin = false;
     }
 
     // Validate input command, check if it is correct
@@ -53,6 +53,11 @@ export class FireTask extends Task {
         this.task_instruction = `Put out the fire on runway ${runway}.`;
         this.print_task = this.task_instruction;
         this.task_complete_text = "Fire successfully put out."
+
+        this.lat = 10.90;
+        this.lon = 63.44;
+        this.draw_pin = true;
+        this.draw_flight = false;
     }
 
     ValidateCommand(command) {
@@ -134,16 +139,7 @@ export class LandingTask extends Task {
         }
         else {
             this.correct_value = "Permit";
-
-            random_value = Math.random();
-            if(random_value >= 0.98)
-                this.task_complete_text = `'s landing has resulted in an accident. ${Math.floor(Math.random() * 100) + 10} people were involved in the accident.`;
-            
-            else if(random_value >= 0.90)
-                this.task_complete_text = `'s landing has resulted in an accident. ${Math.floor(Math.random() * 100) + 10} people were involved in the accident.`;
-
-            else
-                this.task_complete_text = " has landed without issue!";
+            this.task_complete_text = " has landed without issue!";
         }
 
         this.task_instruction = `${this.correct_value} landing.`
@@ -177,16 +173,7 @@ export class TakeoffTask extends Task {
         }
         else {
             this.correct_value = "Permit";
-
-            random_value = Math.random();
-            if(random_value >= 0.98)
-                this.task_complete_text = `'s takeoff has resulted in an accident. ${Math.floor(Math.random() * 100) + 10} people were involved in the accident.`;
-            
-            else if(random_value >= 0.90)
-                this.task_complete_text = `'s takeoff has resulted in an accident. ${Math.floor(Math.random() * 100) + 10} people were involved in the accident.`;
-
-            else
-                this.task_complete_text = " is on route to her destination!";
+            this.task_complete_text = " is on route to her destination!";
         }
 
         this.task_instruction = `${this.correct_value} takeoff.`

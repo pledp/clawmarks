@@ -28,6 +28,8 @@ export default class Flight extends Task {
         }
 
         flight.type = flight.task.type;
+        flight.draw_pin = true;
+        flight.draw_flight = true;
         
         let random = Math.round(Math.random());
         

@@ -19,7 +19,7 @@ def RandomAirport():
     conn = sqlite3.connect(db_path);
 
     cur = conn.cursor();
-    cur.execute(f"SELECT ident, latitude_deg, longitude_deg FROM airport ORDER BY RANDOM() LIMIT 1")
+    cur.execute(f'SELECT ident, longitude_deg, latitude_deg FROM airport WHERE type = "large_airport" ORDER BY RANDOM() LIMIT 1')
     rows = cur.fetchall()
 
     if rows:
