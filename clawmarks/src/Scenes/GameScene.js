@@ -279,7 +279,7 @@ export default class GameScene extends Phaser.Scene
 
 
         if(flight_task.draw_pin) {
-            let pin = this.AddAirportPin(new Vector2(flight_task.lat, flight_task.lon), new Vector2(this.home_x, this.home_y), flight_task.draw_flight);
+            let pin = this.AddAirportPin(new Vector2(flight_task.lon, flight_task.lat), new Vector2(this.home_x, this.home_y), flight_task.draw_flight);
             task.pin = pin;
         }
 
