@@ -54,8 +54,8 @@ export class FireTask extends Task {
         this.print_task = this.task_instruction;
         this.task_complete_text = "Fire successfully put out."
 
-        this.lat = 10.90;
-        this.lon = 63.44;
+        this.lon = 10.90;
+        this.lat = 63.44;
         this.draw_pin = true;
         this.draw_flight = false;
     }

@@ -1,6 +1,7 @@
 import Button from "../UI/Button.js"
 import CRTShader from "../../assets/shaders/CRTShader.js";
 import TextField from "../UI/TextField.js";
+import GameConfig from "../Clawmarks.js"
 
 export default class LoginScene extends Phaser.Scene
 {
@@ -107,8 +108,9 @@ export default class LoginScene extends Phaser.Scene
         )
 
         this.cursor = this.add.bitmapText(64 - 30, 114, 'PixelFont', ">", 30);
-
-        this.cameras.main.setPostPipeline(CRTShader);
+        
+        if(GameConfig.UseShader)
+            this.cameras.main.setPostPipeline(CRTShader);
     }
 
     NewField(field) {

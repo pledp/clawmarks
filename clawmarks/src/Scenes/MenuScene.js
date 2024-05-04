@@ -1,5 +1,6 @@
 import Button from "../UI/Button.js"
 import CRTShader from "../../assets/shaders/CRTShader.js";
+import GameConfig from "../Clawmarks.js";
 
 export default class MenuScene extends Phaser.Scene
 {
@@ -63,6 +64,8 @@ export default class MenuScene extends Phaser.Scene
 
     create ()
     {
+
+        // Add button objects
         this.game_button = new Button("| TIMED >", () => {
             this.scene.start("GameScene");
         }, this.HoverMenuItem.bind(this));
@@ -71,14 +74,31 @@ export default class MenuScene extends Phaser.Scene
             this.scene.start("GameScene");
         }, this.HoverMenuItem.bind(this));
 
-        this.options_button = new Button("OPTIONS ~", () => {
-            this.scene.start("GameScene");
+        this.settings_button = new Button("SETTINGS ~", () => {
+            this.SettingsMenuButton();
         }, this.HoverMenuItem.bind(this));
 
         this.login_button = new Button("LOGOUT @", () => {
             this.scene.start("LoginScene");
         }, this.HoverMenuItem.bind(this));
 
+        let shader_setting = new Button("SHADER", () => {
+            // Turn off shaders
+            GameConfig.UseShader = !GameConfig.UseShader;
+
+            if(!GameConfig.UseShader) {
+                this.cameras.main.removePostPipeline("CRTShader");
+                this.shader_setting_checkmark.GetTextField().text = "OFF";
+                this.shader_setting_checkmark.GetTextField().setTint(0xFF004D);
+            }
+            else {
+                this.cameras.main.setPostPipeline(CRTShader);
+                this.shader_setting_checkmark.GetTextField().text = "ON";
+                this.shader_setting_checkmark.GetTextField().setTint(0x00e436);
+
+            }
+
+        });
 
         this.border = this.add.rectangle(16, 16, this.game.config.width - 32, this.game.config.height - 32, 0x008751).setOrigin(0, 0)
         this.add.rectangle(21, 21, this.game.config.width - 47, this.game.config.height - 47, 0x000000).setOrigin(0, 0)
@@ -86,7 +106,24 @@ export default class MenuScene extends Phaser.Scene
         this.game_button.create(this, 128, 128, 50, 0x00E346);
         this.tutorial_button.create(this, 128, 228, 30, 0x00E346);
 
-        this.options_button.create(this, 64, 464, 30, 0xFFFFFF);
+
+
+        this.settings_button.create(this, 64, 464, 30, 0xFFFFFF);
+        this.settings_menu = this.add.container(this.settings_button.button_field.x + this.settings_button.button_field.width + 50, 464 - 100);
+
+        let settings_border = this.add.rectangle(0, 0, 500, 200 + 30, 0x008751).setOrigin(0, 0)
+        let settings_rect = this.add.rectangle(5, 5, 490, 190 + 30, 0x000000).setOrigin(0, 0)
+
+        shader_setting.create(this, 16, 16, 30, 0xFFFFFF);
+        this.shader_setting_checkmark = new Button(GameConfig.UseShader ? "ON" : "OFF");
+        this.shader_setting_checkmark.create(this, 500 - this.shader_setting_checkmark.text.length * 30 - 16, 16, 30, GameConfig.UseShader ? 0x00E436 : 0xFF004D);
+
+        this.settings_menu.add(settings_border);
+        this.settings_menu.add(settings_rect);
+        this.settings_menu.add(shader_setting.GetTextField());
+        this.settings_menu.add(this.shader_setting_checkmark.GetTextField());
+        this.settings_menu.visible = false;
+
         this.login_button.create(this, 64, 564, 30, 0xFFFFFF);
 
         this.cursor = this.add.bitmapText(128 - 50, 128, 'PixelFont', ">", 50);
@@ -100,7 +137,8 @@ export default class MenuScene extends Phaser.Scene
             16
         )
 
-        this.cameras.main.setPostPipeline(CRTShader);
+        if(GameConfig.UseShader)
+            this.cameras.main.setPostPipeline(CRTShader);
 
     }
 
@@ -109,5 +147,9 @@ export default class MenuScene extends Phaser.Scene
         this.cursor.x = item.button_field.x - item.button_field.fontSize;
 
         this.cursor.fontSize = item.button_field.fontSize;
+    }
+
+    SettingsMenuButton() {
+        this.settings_menu.visible = !this.settings_menu.visible;
     }
 }

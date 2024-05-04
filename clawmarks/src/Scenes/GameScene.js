@@ -4,7 +4,8 @@ import FlightPin from "../UI/FlightPin.js"
 import { Types } from "../Mechanics/Tasks.js"
 import LogItem from "../UI/LogItem.js"
 
-import { Vector2 } from "../Clawmarks.js";
+import { Vector2} from "../Clawmarks.js";
+import GameConfig from "../Clawmarks.js";
 
 
 export default class GameScene extends Phaser.Scene
@@ -26,6 +27,9 @@ export default class GameScene extends Phaser.Scene
         }
         else if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.tasks_container.list.length - 1) {
             this.MoveCursor(this.cur_task + 1);
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.esc_key)) {
+            this.EndGame();
         }
 
         if(this.game_mode.is_playing) {
@@ -69,6 +73,8 @@ export default class GameScene extends Phaser.Scene
 
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.esc_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
 
         // Tasks GUI
 
@@ -132,8 +138,8 @@ export default class GameScene extends Phaser.Scene
 
         });
 
-
-        this.cameras.main.setPostPipeline(CRTShader);
+        if(GameConfig.UseShader)
+            this.cameras.main.setPostPipeline(CRTShader);
     }
 
     EndGame() {
