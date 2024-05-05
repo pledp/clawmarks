@@ -8,6 +8,8 @@ export default class TimedGameMode extends GameMode {
     constructor(widget_callback = null, log_callback = null) {
         super();
 
+        this.add_task_listeners = [];
+
         this.letters = [];
         this.char_time = 0;
         this.cur_char_index = 0;
@@ -22,6 +24,10 @@ export default class TimedGameMode extends GameMode {
 
         this.mode_name = "Timed";
 
+    }
+
+    AddTaskListener(listener) {
+        this.add_task_listeners.push(listener);
     }
 
     StartGame() {
@@ -85,16 +91,19 @@ export default class TimedGameMode extends GameMode {
         }
     }
 
-    async AddTask(force_task = undefined, spot = undefined) {
-
+    async AddTask(make_flight = true, force_task = null, spot = null) {
         let flight = await Flight.CreateFlight(force_task);
+
+        if (!make_flight) {
+            flight = new FireTask(); 
+        }
 
         if(spot != null) 
             this.tasks.splice(spot, 0, flight);
         else 
             this.tasks.push(flight);
 
-        this.widget_callback(spot);
+        this.NotifyNewTask(spot);
 
         this.random_time = Math.floor(Math.random() * 6) + 3;
     }
@@ -108,12 +117,16 @@ export default class TimedGameMode extends GameMode {
         return `${text}${(this.timer % 60).toFixed(2)}`;
     }
 
-    OnCompletion(task) {
+    async OnCompletion(task) {
         if(Math.random() > 0.80) {
-            this.log_callback(new LogItem("A fire has broken out!", 0xFF004D));
-            this.tasks.splice(0, 0, new FireTask())
+            await this.AddTask(false, FireTask, 0);
 
-            this.widget_callback(0);
+        }
+    }
+
+    NotifyNewTask(spot = null) {
+        for(let i = 0; i < this.add_task_listeners.length; i++) {
+            this.add_task_listeners[i](spot);
         }
     }
 }

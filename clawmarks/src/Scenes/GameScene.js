@@ -4,7 +4,7 @@ import FlightPin from "../UI/FlightPin.js"
 import { Types } from "../Mechanics/Tasks.js"
 import LogItem from "../UI/LogItem.js"
 
-import { Vector2} from "../Clawmarks.js";
+import { Vector2, SnapToGrid } from "../Clawmarks.js";
 import GameConfig from "../Clawmarks.js";
 
 
@@ -13,6 +13,14 @@ export default class GameScene extends Phaser.Scene
     constructor() {
         super({key: "GameScene"});
         
+        this.airport_pins = [];
+
+        this.flights_to_be_moved = [];
+        this.log = [];
+        this.t = 0
+
+        this.home_x = 10.90;
+        this.home_y = 63.44;
     }
 
     update(time, delta) {
@@ -42,6 +50,15 @@ export default class GameScene extends Phaser.Scene
             this.EndGame();
 
         this.points_text.text = `${this.points}p  ${this.eco_points}ep`;
+
+        for(let i = 0; i < this.flights_to_be_moved.length; i++) {
+            
+            this.flights_to_be_moved[i].UpdateEnding(delta);
+
+            if(this.flights_to_be_moved[i].t >= 1) {
+                this.flights_to_be_moved.splice(i, 1);
+            }
+        }
     }
 
     preload() {
@@ -50,16 +67,9 @@ export default class GameScene extends Phaser.Scene
 
     create ()
     {
-        this.log = [];
-        this.t = 0
-
         this.map = this.add.sprite(0, 0, 'map').setOrigin(0,0);
         this.map.scale = 4.66666666667;
 
-        this.airport_pins = [];
-
-        this.home_x = 10.90;
-        this.home_y = 63.44;
         let home_x = (this.home_x + 180) * (this.map.displayWidth / 360);
         let home_y = this.map.displayHeight - ((this.home_y + 90) * (this.map.displayHeight / 180));
 
@@ -67,8 +77,6 @@ export default class GameScene extends Phaser.Scene
         this.cursor_y = this.add.rectangle(this.map.displayWidth / 2, (Math.floor(home_y / 20) * 20), this.map.displayWidth, 30, 0xFF004D, 0.5);
 
         this.AddAirportPin(new Vector2(this.home_x, this.home_y));
-
-
 
 
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -86,8 +94,10 @@ export default class GameScene extends Phaser.Scene
 
         this.blink_timer = 0;
 
-
+        // Setup gamemode
         this.game_mode = new TimedGameMode(this.AddTaskWidget.bind(this), this.Log.bind(this));
+        this.game_mode.AddTaskListener(this.AddTaskWidget.bind(this));
+
         this.game_mode.StartGame();
 
         let info_container = this.add.container(this.game.config.width - (this.game.config.width - this.map.displayWidth) + ((this.game.config.width - this.map.displayWidth - 400) / 2), 16);
@@ -158,15 +168,7 @@ export default class GameScene extends Phaser.Scene
             
             list[this.cur_task].is_highlighted = false;
 
-            for(let i = 0; i < list[this.cur_task].pin.pins.length; i++) {
-                list[this.cur_task].pin.pins[i].fillColor = 0x000000;
-            }
-
-            if(list[this.cur_task].pin.path) {
-                for (let i = 0; i < list[this.cur_task].pin.path.list.length; i++) {
-                    list[this.cur_task].pin.path.list[i].fillColor = 0x5F574F;
-                }
-            }
+            list[this.cur_task].pin.HighlightPins(0x000000, 0x5f574f);
         }
 
         // If element we're moving to exists
@@ -176,18 +178,11 @@ export default class GameScene extends Phaser.Scene
             list[to].list[0].fillColor = 0x00E436;
             
             list[to].is_highlighted = true;
-            for(let i = 0; i < list[to].pin.pins.length; i++) {
-                list[to].pin.pins[i].fillColor = 0x00E436;
-            }
 
-            if(list[to].pin.path) {
-                for (let i = 0; i < list[to].pin.path.list.length; i++) {
-                    list[to].pin.path.list[i].fillColor = 0x00E436
-                }
-            }
+            list[to].pin.HighlightPins(0x00E436);
             
-            this.cursor_x.x = this.SnapToGrid(list[to].pin.pins[list[to].pin.pins.length - 1].x, 20);
-            this.cursor_y.y = this.SnapToGrid(list[to].pin.pins[list[to].pin.pins.length - 1].y, 20);
+            this.cursor_x.x = SnapToGrid(list[to].pin.GetPinToHighlight().x, 20);
+            this.cursor_y.y = SnapToGrid(list[to].pin.GetPinToHighlight().y, 20);
         }
 
         this.cur_task = to;
@@ -195,11 +190,11 @@ export default class GameScene extends Phaser.Scene
 
     // Remove task
 
-    HandleCommand(command) {
+    async HandleCommand(command) {
         if(this.game_mode.tasks[this.cur_task]) {
             if(this.game_mode.tasks[this.cur_task].ValidateCommand(command)) {
                 this.Log(new LogItem(this.game_mode.tasks[this.cur_task].task_complete_text, 0x00E436));
-                this.game_mode.OnCompletion(this.cur_task);
+                await this.game_mode.OnCompletion(this.cur_task);
                 this.points += this.game_mode.tasks[this.cur_task].points_to_award;
 
 
@@ -219,7 +214,7 @@ export default class GameScene extends Phaser.Scene
             if(this.num_of_fails >= 3) {
                 switch(this.game_mode.tasks[this.cur_task].type) {
                     case Types.Fire:
-                        this.Log(new LogItem("HEL'S FIRE HAS SPREAD.", 0xFF004D));
+                        this.Log(new LogItem("HEL'S FIRE HAS... crashed?.", 0xFF004D));
                         this.points -= 10;
                         break;
                     default:
@@ -244,11 +239,12 @@ export default class GameScene extends Phaser.Scene
     RemoveTask() {
         let list = this.tasks_container.list
 
-        for(let i = 0; i < list[this.cur_task].pin.pins.length; i++) {
-            list[this.cur_task].pin.pins[i].destroy();
+        if(list[this.cur_task].pin.flight_pin) {
+            this.flights_to_be_moved.push(list[this.cur_task].pin)
         }
-        if(list[this.cur_task].pin.path)
-            list[this.cur_task].pin.path.destroy();
+        else {
+            list[this.cur_task].pin.CleanUp();
+        }
 
         this.game_mode.tasks.splice(this.cur_task, 1);
         this.tasks_container.removeAt(this.cur_task, true);
@@ -265,6 +261,10 @@ export default class GameScene extends Phaser.Scene
             flight_task = this.game_mode.tasks[spot];
         else 
             spot = this.tasks_container.list.length;
+
+        if(flight_task.log_on_init) {
+            this.Log(flight_task.log_on_init)
+        }
 
 
         // Container for individual task
@@ -284,11 +284,9 @@ export default class GameScene extends Phaser.Scene
         let point_text = new Phaser.GameObjects.BitmapText(this, max_width - (flight_task.points_to_award.toString().length + 2) * 16, 16, 'PixelFont', `${flight_task.points_to_award}p`, 16);
 
 
-        if(flight_task.draw_pin) {
-            let pin = this.AddAirportPin(new Vector2(flight_task.lon, flight_task.lat), new Vector2(this.home_x, this.home_y), flight_task.draw_flight);
-            task.pin = pin;
-        }
-
+        if(flight_task.draw_pin) 
+            task.pin = this.AddAirportPin(new Vector2(flight_task.lon, flight_task.lat), new Vector2(this.home_x, this.home_y), flight_task.draw_flight);
+        
         task.add(border);
         task.add(rect);
         task.add(flight_text);
@@ -324,44 +322,37 @@ export default class GameScene extends Phaser.Scene
     }
 
     AddAirportPin(from, to = undefined, draw_flight = false) {
+        // Create airport pin on map
+
         if(!to)
             to = from;
 
         let flight = new FlightPin(from, to, this.map);        
-        let pin = this.add.rectangle(this.SnapToGrid(flight.from.x, 20), this.SnapToGrid(flight.from.y, 20), 20, 20, 0x000000, 1);
+        let pin = this.add.rectangle(SnapToGrid(flight.from.x, 20), SnapToGrid(flight.from.y, 20), 20, 20, 0x000000, 1);
+        flight.airport_pin = pin;
 
+        // Draw flight if needed
         if(draw_flight) {
-
-
             const points = flight.curve.getPoints(16);
 
             let points_container = this.add.container(0, 0);
 
             for(let i = 0; i < points.length; i++) {
-                let dot = new Phaser.GameObjects.Rectangle(this, this.SnapToGrid(points[i].x, 20), this.SnapToGrid(points[i].y, 20), 5, 5, 0x5f574f, 1);
+                let dot = new Phaser.GameObjects.Rectangle(this, SnapToGrid(points[i].x, 20), SnapToGrid(points[i].y, 20), 5, 5, 0x5f574f, 1);
                 points_container.add(dot);
             }
 
-            let flight_on_curve = this.add.rectangle(this.SnapToGrid(flight.GetOnCurve(0.50).x, 20), this.SnapToGrid(flight.GetOnCurve(0.50).y, 20), 20, 20, 0x000000, 1);
-            flight_on_curve.t = 0.50;
+            flight.points_container = points_container;
 
-            return {
-                flight: flight,
-                pins: [
-                    pin,
-                    flight_on_curve,
-                ],
-                path: points_container,
-            }
+            let flight_on_curve = this.add.rectangle(SnapToGrid(flight.GetOnCurve(0.50).x, 20), SnapToGrid(flight.GetOnCurve(0.50).y, 20), 20, 20, 0x000000, 1);
+            flight.flight_pin = flight_on_curve;
+
+            flight.t = 0.50;
+
+            return flight;
         }
 
-        return {
-            flight: flight,
-            pins: [
-                pin,
-            ],
-            path: null,
-        }
+        return flight;
 
 
     }
@@ -377,6 +368,5 @@ export default class GameScene extends Phaser.Scene
         }
 
         this.log.push(this.add.bitmapText(0, this.game.config.height - 80, 'PixelFont', `> ${log_item.message}`, 20).setTint(log_item.color))
-        
     }
 }

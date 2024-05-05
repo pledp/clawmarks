@@ -22,3 +22,7 @@ export class Vector2 {
         this.y = y;
     }
 }
+
+export function SnapToGrid(pixel, grid_element_size, padding = 0) {
+    return (Math.round((pixel / grid_element_size) + padding) * grid_element_size)
+}

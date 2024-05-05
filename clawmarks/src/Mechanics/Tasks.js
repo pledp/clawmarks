@@ -1,3 +1,5 @@
+import LogItem from "../UI/LogItem.js";
+
 // Abstract base for task 
 export const Types = {
     Fire: "fire",
@@ -8,8 +10,9 @@ export const Types = {
 }
 
 export class Task {
+    static type;
+    static log_on_init;
 
-    type;
     #task_complete_text;
     #correct_command;
     #correct_value;
@@ -42,9 +45,12 @@ export class Task {
 }
 
 export class FireTask extends Task {
+    type = Types.Fire;
+    log_on_init = new LogItem("A fire has broken out!", 0xff004d);
+
     constructor(on_completion_callback = undefined) {
         super();
-        this.type = Types.Fire;
+
 
         this.correct_command = "fire";
 
