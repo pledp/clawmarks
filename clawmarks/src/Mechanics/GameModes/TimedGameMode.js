@@ -5,7 +5,7 @@ import LogItem from "../../UI/LogItem.js";
 
 export default class TimedGameMode extends GameMode {
 
-    constructor(widget_callback = null, log_callback = null) {
+    constructor() {
         super();
 
         this.add_task_listeners = [];
@@ -15,9 +15,6 @@ export default class TimedGameMode extends GameMode {
         this.cur_char_index = 0;
 
         this.add_task_time = 0;
-
-        this.widget_callback = widget_callback;
-        this.log_callback = log_callback;
 
         this.random_time = Math.floor(Math.random() * 6) + 3;
         this.timer = 0;

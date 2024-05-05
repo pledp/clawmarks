@@ -95,7 +95,7 @@ export default class GameScene extends Phaser.Scene
         this.blink_timer = 0;
 
         // Setup gamemode
-        this.game_mode = new TimedGameMode(this.AddTaskWidget.bind(this), this.Log.bind(this));
+        this.game_mode = new TimedGameMode();
         this.game_mode.AddTaskListener(this.AddTaskWidget.bind(this));
 
         this.game_mode.StartGame();
