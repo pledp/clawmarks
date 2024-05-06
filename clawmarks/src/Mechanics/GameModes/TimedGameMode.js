@@ -5,10 +5,12 @@ import LogItem from "../../UI/LogItem.js";
 
 export default class TimedGameMode extends GameMode {
 
-    constructor() {
+    constructor(log_callback) {
         super();
 
         this.add_task_listeners = [];
+
+        this.log_callback = log_callback;
 
         this.letters = [];
         this.char_time = 0;
@@ -16,10 +18,12 @@ export default class TimedGameMode extends GameMode {
 
         this.add_task_time = 0;
 
-        this.random_time = Math.floor(Math.random() * 6) + 3;
-        this.timer = 0;
+        this.random_time = Math.floor(Math.random() * 5) + 2;
+        this.timer = -4;
 
         this.mode_name = "Timed";
+
+        this.countdown_timer = 0;
 
     }
 
@@ -29,12 +33,36 @@ export default class TimedGameMode extends GameMode {
 
     StartGame() {
         this.is_finishing = false;
+        this.is_starting = true;
         this.is_playing = true;
+
+        this.log_callback(new LogItem("TIMED-mode", 0xFF004D))
+        this.log_callback(new LogItem("You have 5 minutes to get as many points as possible!", 0x5f574f))
+        this.log_callback(new LogItem(" ", 0x5f574f))
+
+
     }
 
     Update(scene, time, delta) {
-        // Convert MS to S
-        if(!this.is_finishing) {
+        
+        if(this.is_starting) {
+            this.timer += delta / 1000;
+            this.countdown_timer += delta / 1000;
+
+            if(this.countdown_timer >= 1) {
+                this.log_callback(new LogItem(`Starting in ${Math.abs(this.timer)}...`, 0x5f574f))
+                this.countdown_timer = 0;
+            }
+
+
+            if(this.timer >= 0) {
+                this.is_starting = false
+                this.timer = 0;
+            }
+        }
+
+        else if(!this.is_finishing) {
+            // Convert MS to S
             this.add_task_time += delta / 1000;
             this.timer += delta / 1000;
 
@@ -43,13 +71,14 @@ export default class TimedGameMode extends GameMode {
                 this.is_finishing = true;
             }
                 
-
+            // After a period, add a new flight
             if(this.add_task_time >= this.random_time) {
                 if(this.tasks.length < 6)
                     this.AddTask();
                 this.add_task_time = 0;
             }
         }
+
         else {
             this.UpdateEndScene(scene, time, delta);
         }
@@ -88,7 +117,7 @@ export default class TimedGameMode extends GameMode {
         }
     }
 
-    async AddTask(make_flight = true, force_task = null, spot = null) {
+    async AddTask(force_task = null, make_flight = true, spot = null) {
         let flight = await Flight.CreateFlight(force_task);
 
         if (!make_flight) {
@@ -102,7 +131,7 @@ export default class TimedGameMode extends GameMode {
 
         this.NotifyNewTask(spot);
 
-        this.random_time = Math.floor(Math.random() * 6) + 3;
+        this.random_time = Math.floor(Math.random() * 5) + 2;
     }
 
     GetTime() {
@@ -116,7 +145,7 @@ export default class TimedGameMode extends GameMode {
 
     async OnCompletion(task) {
         if(Math.random() > 0.80) {
-            await this.AddTask(false, FireTask, 0);
+            await this.AddTask(FireTask, false, 0);
 
         }
     }

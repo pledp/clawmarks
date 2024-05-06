@@ -5,11 +5,11 @@ export default class GameMode {
     is_playing = false;
     tasks = [];
 
-    constructor() {}
+    constructor(log_callback = undefined) {}
     
     StartGame() {}
     Update(scene, time, delta) {}
-    AddTask() {}
+    AddTask(force_task, make_flight, spot) {}
     OnCrash() {}
     OnFail() {}
     OnCompletion(task) {}

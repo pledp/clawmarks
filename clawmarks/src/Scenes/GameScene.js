@@ -17,10 +17,20 @@ export default class GameScene extends Phaser.Scene
 
         this.flights_to_be_moved = [];
         this.log = [];
+        this.log_arrows = [];
+        this.log_timer = 0;
+
         this.t = 0
 
         this.home_x = 10.90;
         this.home_y = 63.44;
+    }
+
+    init(data) {
+        this.game_mode = new data.GameMode(this.Log.bind(this));
+        this.game_mode.AddTaskListener(this.AddTaskWidget.bind(this));
+
+        console.log(data);
     }
 
     update(time, delta) {
@@ -51,6 +61,7 @@ export default class GameScene extends Phaser.Scene
 
         this.points_text.text = `${this.points}p  ${this.eco_points}ep`;
 
+        // Move planes on map
         for(let i = 0; i < this.flights_to_be_moved.length; i++) {
             
             this.flights_to_be_moved[i].UpdateEnding(delta);
@@ -59,14 +70,28 @@ export default class GameScene extends Phaser.Scene
                 this.flights_to_be_moved.splice(i, 1);
             }
         }
+
+        this.log_timer += delta / 1000
+
+        if(this.log_timer >= 0.01) {
+            for(let i = 0; i < this.log.length; i++) {
+                if(this.log[i].cur_index < this.log[i].item.message.length) {
+                    this.log[i].text += this.log[i].item.message[this.log[i].cur_index];
+                    this.log[i].cur_index++;
+                }
+            }
+
+            this.log_timer = 0;
+        }
     }
 
     preload() {
         this.load.image('map', "assets/world-map.png");
     }
 
-    create ()
+    create()
     {
+        // Set map width to 1400.
         this.map = this.add.sprite(0, 0, 'map').setOrigin(0,0);
         this.map.scale = 4.66666666667;
 
@@ -94,9 +119,7 @@ export default class GameScene extends Phaser.Scene
 
         this.blink_timer = 0;
 
-        // Setup gamemode
-        this.game_mode = new TimedGameMode();
-        this.game_mode.AddTaskListener(this.AddTaskWidget.bind(this));
+        // Start gamemode
 
         this.game_mode.StartGame();
 
@@ -361,12 +384,20 @@ export default class GameScene extends Phaser.Scene
         if(this.log.length >= 10) {
             this.log[0].destroy();
             this.log.splice(0, 1);
+            this.log_arrows[0].destroy();
+            this.log_arrows.splice(0, 1);
         }
 
+        let offset = log_item.height * 22 + 40;
         for(let i = 0; i < this.log.length; i++) {
-            this.log[i].y -= 30;
+            this.log[i].y -= offset;
+            this.log_arrows[i].y -= offset;
         }
 
-        this.log.push(this.add.bitmapText(0, this.game.config.height - 80, 'PixelFont', `> ${log_item.message}`, 20).setTint(log_item.color))
+        this.log_arrows.push(this.add.bitmapText(0, this.game.config.height - 80 - log_item.height * 22, 'PixelFont', `>`, 20).setTint(log_item.color).setLineSpacing(2))
+        this.log.push(this.add.bitmapText(30, this.game.config.height - 80 - log_item.height * 22, 'PixelFont', `${""}`, 20).setTint(log_item.color).setLineSpacing(2))
+
+        this.log[this.log.length - 1].cur_index = 0;
+        this.log[this.log.length - 1].item = log_item;
     }
 }

@@ -2,6 +2,9 @@ import Button from "../UI/Button.js"
 import CRTShader from "../../assets/shaders/CRTShader.js";
 import GameConfig from "../Clawmarks.js";
 
+import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js";
+import Tutorial from "../Mechanics/GameModes/Tutorial.js";
+
 export default class MenuScene extends Phaser.Scene
 {
     constructor() {
@@ -67,11 +70,11 @@ export default class MenuScene extends Phaser.Scene
 
         // Add button objects
         this.game_button = new Button("| TIMED >", () => {
-            this.scene.start("GameScene");
+            this.scene.start("GameScene", {GameMode: TimedGameMode});
         }, this.HoverMenuItem.bind(this));
 
         this.tutorial_button = new Button("| TUTORIAL >", () => {
-            this.scene.start("GameScene");
+            this.scene.start("GameScene", {GameMode: Tutorial});
         }, this.HoverMenuItem.bind(this));
 
         this.settings_button = new Button("SETTINGS ~", () => {
@@ -116,7 +119,7 @@ export default class MenuScene extends Phaser.Scene
 
         shader_setting.create(this, 16, 16, 30, 0xFFFFFF);
         this.shader_setting_checkmark = new Button(GameConfig.UseShader ? "ON" : "OFF");
-        this.shader_setting_checkmark.create(this, 500 - this.shader_setting_checkmark.text.length * 30 - 16, 16, 30, GameConfig.UseShader ? 0x00E436 : 0xFF004D);
+        this.shader_setting_checkmark.create(this, 500 - this.shader_setting_checkmark.text.length * 30 - 40, 16, 30, GameConfig.UseShader ? 0x00E436 : 0xFF004D);
 
         this.settings_menu.add(settings_border);
         this.settings_menu.add(settings_rect);

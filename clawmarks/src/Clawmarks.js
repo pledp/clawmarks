@@ -6,6 +6,9 @@ export default class Clawmarks {
     static Debug = false;
     static UseShader = true;
 
+    static width;
+    static height;
+
     static SetConfig(config) {
         if("Debug" in config)
             Clawmarks.Debug = config.Debug;
@@ -13,6 +16,9 @@ export default class Clawmarks {
         if("UseShader" in config) {
             Clawmarks.UseShader = config.UseShader;
         }
+
+        Clawmarks.width = config.width;
+        Clawmarks.height = config.height;
     }
 }
 

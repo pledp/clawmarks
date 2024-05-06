@@ -28,6 +28,8 @@ const config = {
 // Set game config (Debug mode etc)
 Clawmarks.SetConfig({
     Debug: false,
+    width: 1920,
+    height: 1080,
 });
 
 const game = new Phaser.Game(config);
