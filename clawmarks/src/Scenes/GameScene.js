@@ -247,6 +247,7 @@ export default class GameScene extends Phaser.Scene
                 }
 
                 this.RemoveTask();
+                this.MoveCursor(0);
 
                 this.eco_points += 1;
 
