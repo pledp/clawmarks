@@ -1,3 +1,4 @@
+import Clawmarks from "../Clawmarks.js";
 import { Vector2, SnapToGrid } from "../Clawmarks.js";
 
 export default class FlightPin {
@@ -37,7 +38,23 @@ export default class FlightPin {
 
         if(this.points_container)
             this.points_container.destroy();
+    }
 
+    SetCrashCurve() {
+
+        const start_point = this.curve.getPoint(this.t);
+        let crash_curve_x = 100;
+        if(this.to.x > start_point.x) {
+            crash_curve_x = -100
+        }
+
+        const control_point1 = new Phaser.Math.Vector2(start_point.x - crash_curve_x, start_point.y + 25);
+        const control_point2 =  new Phaser.Math.Vector2(start_point.x - crash_curve_x * 2, start_point.y + 50);
+
+        const end_point = new Phaser.Math.Vector2(start_point.x - crash_curve_x * 2, Clawmarks.height);
+
+        this.curve = new Phaser.Curves.CubicBezier(start_point, control_point1, control_point2, end_point);
+        this.t = 0;
     }
 
     GetPinToHighlight() {
@@ -82,9 +99,6 @@ export default class FlightPin {
     GetAngle() {
         let tangent = new Phaser.Math.Vector2();
         this.curve.getTangent(this.t, tangent);
-
-        let dx = tangent.x - tangent.x / 2;
-        let dy = tangent.x - tangent.x / 2;
 
         let theta = Math.atan2(tangent.y, tangent.x);
         theta *= 180 / Math.PI;
