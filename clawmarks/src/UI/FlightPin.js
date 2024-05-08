@@ -66,14 +66,29 @@ export default class FlightPin {
     }
 
     UpdateEnding(delta) {
-        this.t += 0.001 * delta; 
+        this.t += 0.0001 * delta; 
         this.flight_pin.x = SnapToGrid(this.GetOnCurve(this.t).x, 20)
         this.flight_pin.y = SnapToGrid(this.GetOnCurve(this.t).y, 20)
+
+        this.flight_pin.angle = this.GetAngle();
         
         if(this.t >= 1) {
             this.airport_pin.destroy();
             this.flight_pin.destroy();
             this.points_container.destroy();
         }
+    }
+
+    GetAngle() {
+        let tangent = new Phaser.Math.Vector2();
+        this.curve.getTangent(this.t, tangent);
+
+        let dx = tangent.x - tangent.x / 2;
+        let dy = tangent.x - tangent.x / 2;
+
+        let theta = Math.atan2(tangent.y, tangent.x);
+        theta *= 180 / Math.PI;
+
+        return theta;
     }
 }

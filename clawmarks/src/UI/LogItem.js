@@ -12,7 +12,6 @@ export default class LogItem {
 
     FormatMessage() {
         let max_width = parseInt(Clawmarks.width * 0.60 / 20);
-        console.log(max_width)
         let new_message = "";
 
         let cur_width = 0;

@@ -369,9 +369,10 @@ export default class GameScene extends Phaser.Scene
             flight.points_container = points_container;
 
             let flight_on_curve = this.add.rectangle(SnapToGrid(flight.GetOnCurve(0.50).x, 20), SnapToGrid(flight.GetOnCurve(0.50).y, 20), 20, 20, 0x000000, 1);
-            flight.flight_pin = flight_on_curve;
-
             flight.t = 0.50;
+
+            flight_on_curve.angle = flight.GetAngle();
+            flight.flight_pin = flight_on_curve;
 
             return flight;
         }
