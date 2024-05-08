@@ -214,6 +214,8 @@ export default class GameScene extends Phaser.Scene
     // Remove task
 
     async HandleCommand(command) {
+        let list = this.tasks_container.list;
+
         if(this.game_mode.tasks[this.cur_task]) {
             if(this.game_mode.tasks[this.cur_task].ValidateCommand(command)) {
                 this.Log(new LogItem(this.game_mode.tasks[this.cur_task].task_complete_text, 0x00E436));
@@ -242,6 +244,7 @@ export default class GameScene extends Phaser.Scene
                         break;
                     default:
                         this.Log(new LogItem("CRASH!", 0xFF004D));
+                        list[this.cur_task].pin.SetCrashCurve();
                         this.points -= 3;
                         break;
                 }
@@ -369,9 +372,10 @@ export default class GameScene extends Phaser.Scene
             flight.points_container = points_container;
 
             let flight_on_curve = this.add.rectangle(SnapToGrid(flight.GetOnCurve(0.50).x, 20), SnapToGrid(flight.GetOnCurve(0.50).y, 20), 20, 20, 0x000000, 1);
-            flight.flight_pin = flight_on_curve;
-
             flight.t = 0.50;
+
+            flight_on_curve.angle = flight.GetAngle();
+            flight.flight_pin = flight_on_curve;
 
             return flight;
         }
