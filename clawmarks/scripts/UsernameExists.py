@@ -1,22 +1,25 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+import os
 import sqlite3
 
 app = Flask(__name__)
+cors = CORS(app)
 
-DATABASE = 'kayttajat.db'
+db_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/assets/flight_game.db"
+print(db_path)
 
-def check_username_exists(username):
-    connection = sqlite3.connect(DATABASE)
-    cursor = connection.cursor()
-    cursor.execute("SELECT 1 FROM kayttajat WHERE kayttajatunnus = ?", (username,))
-    user_exists = cursor.fetchone() is not None
-    connection.close()
-    return user_exists
+@app.route('/UsernameExists/<username>')
+def UsernameExists(username):
+    conn = sqlite3.connect(db_path)
 
-@app.route('/tarkista_kayttaja/<kayttajatunnus>')
-def tarkista_kayttaja(kayttajatunnus):
-    kayttaja_olemassa = check_username_exists(kayttajatunnus)
-    return jsonify({'kayttaja_olemassa': kayttaja_olemassa})
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT 1 FROM game WHERE screen_name = '{username}'")
+    rows = cursor.fetchall()
+
+    exists = bool(rows)
+    return jsonify({'exists': exists})
 
 if __name__ == '__main__':
-    app.run(use_reloader=True, host='127.0.0.1', port=3000)
+    app.run(use_reloader=True, host='127.0.0.1', port=10000)
