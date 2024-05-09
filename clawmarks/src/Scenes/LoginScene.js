@@ -17,6 +17,8 @@ export default class LoginScene extends Phaser.Scene
             'SyntaxError: missing variable name', 'ReferenceError: reference to undefined property "x"'
         ]
         this.lag_texts = [];
+
+        this.switch_scene = false;
     }
 
     update(time, delta) {
@@ -66,6 +68,10 @@ export default class LoginScene extends Phaser.Scene
             }
             this.lag_texts = [];
         }
+
+        if(this.switch_scene) {
+            this.scene.start("MenuScene");
+        }
     } 
 
 
@@ -77,15 +83,18 @@ export default class LoginScene extends Phaser.Scene
         this.border = this.add.rectangle(16, 16, this.game.config.width - 32, this.game.config.height - 32, 0x008751).setOrigin(0, 0)
         this.add.rectangle(21, 21, this.game.config.width - 47, this.game.config.height - 47, 0x000000).setOrigin(0, 0)
 
-        this.login_button = new Button("LOGIN >", () => {
-            this.scene.start("MenuScene");
-        }, this.HoverMenuItem.bind(this));
-        this.register_button = new Button("REGISTER @", () => {
-            this.scene.start("MenuScene");
-        }, this.HoverMenuItem.bind(this));
+
 
         this.login_field = new TextField(undefined, this.UpdateCursor.bind(this), this.NewField.bind(this));
         this.register_field = new TextField(undefined, this.UpdateCursor.bind(this), this.NewField.bind(this));
+
+        this.register_button = new Button("REGISTER @", () => {
+            this.RegisterUser(this.register_field.text);
+        }, this.HoverMenuItem.bind(this));
+
+        this.login_button = new Button("LOGIN >", () => {
+            this.scene.start("MenuScene");
+        }, this.HoverMenuItem.bind(this));
 
         this.text_field = this.add.bitmapText(64, 64, "PixelFont", ">", 30);
         this.login_field.create(this, 104, 64, 30, 0x00E346);
@@ -127,5 +136,17 @@ export default class LoginScene extends Phaser.Scene
         this.cursor.x = item.button_field.x - item.button_field.fontSize;
 
         this.cursor.fontSize = item.button_field.fontSize;
+    }
+
+    async RegisterUser(name) {
+        const response = await fetch(`http://127.0.0.1:3000/UsernameExists/${name}`);
+        const user_exists = await response.json();
+
+        if(!user_exists.exists) {
+            const user = await fetch(`http://127.0.0.1:3000/CreateNewUser/${name}`);
+            const user_2 = await user.json();
+
+            this.switch_scene = true
+        }
     }
 }
