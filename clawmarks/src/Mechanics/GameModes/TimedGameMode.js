@@ -71,7 +71,7 @@ export default class TimedGameMode extends GameMode {
             this.timer += delta / 1000;
 
             // End game at 5 minutes
-            if(this.timer > 20) {
+            if(this.timer > 300) {
                 this.is_finishing = true;
                 if(scene.points > Clawmarks.user.high_score) {
                     this.end_text = `New high-score! ${scene.points} points!`;

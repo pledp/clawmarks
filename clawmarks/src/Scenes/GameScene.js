@@ -29,8 +29,6 @@ export default class GameScene extends Phaser.Scene
     init(data) {
         this.game_mode = new data.GameMode(this.Log.bind(this));
         this.game_mode.AddTaskListener(this.AddTaskWidget.bind(this));
-
-        console.log(data);
     }
 
     update(time, delta) {
@@ -87,6 +85,7 @@ export default class GameScene extends Phaser.Scene
 
     preload() {
         this.load.image('map', "assets/world-map.png");
+        this.load.image('airplane', "assets/airplane.png");
 
         this.load.audio('task-success', 'assets/sounds/task-success.wav');
         this.load.audio('task-fail', 'assets/sounds/task-fail.mp3');
@@ -383,10 +382,17 @@ export default class GameScene extends Phaser.Scene
 
             flight.points_container = points_container;
 
-            let flight_on_curve = this.add.rectangle(SnapToGrid(flight.GetOnCurve(0.50).x, 20), SnapToGrid(flight.GetOnCurve(0.50).y, 20), 20, 20, 0x000000, 1);
-            flight.t = 0.50;
+            flight.t = Math.random();
 
-            flight_on_curve.angle = flight.GetAngle();
+            let flight_on_curve = this.add.sprite(SnapToGrid(flight.GetOnCurve(flight.t).x, 20), SnapToGrid(flight.GetOnCurve(flight.t).y, 20), "airplane");
+
+            if(flight.to.x < flight.from.x) 
+                flight_on_curve.setFlipY(true);
+            
+
+            flight_on_curve.scale = Math.random() * 2 + 0.8;
+
+            flight_on_curve.angle = flight.SnapAngle(flight.GetAngle(), 45);
             flight.flight_pin = flight_on_curve;
 
             return flight;

@@ -87,8 +87,8 @@ export default class FlightPin {
         this.flight_pin.x = SnapToGrid(this.GetOnCurve(this.t).x, 20)
         this.flight_pin.y = SnapToGrid(this.GetOnCurve(this.t).y, 20)
 
-        this.flight_pin.angle = this.GetAngle();
-        
+        this.flight_pin.angle = this.SnapAngle(this.GetAngle(), 45);
+
         if(this.t >= 1) {
             this.airport_pin.destroy();
             this.flight_pin.destroy();
@@ -104,5 +104,9 @@ export default class FlightPin {
         theta *= 180 / Math.PI;
 
         return theta;
+    }
+
+    SnapAngle(angle, step) {
+        return Math.round((angle / step)) * step;
     }
 }
