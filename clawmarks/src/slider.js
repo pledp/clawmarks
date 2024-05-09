@@ -18,5 +18,5 @@ document.addEventListener('DOMContentLoaded', function() {
         showCurrentImg();
     });
 
-    showCurrentImg(); // Ensimmäinen kuva näytetään alussa
+    showCurrentImg();
 });
