@@ -87,6 +87,12 @@ export default class GameScene extends Phaser.Scene
 
     preload() {
         this.load.image('map', "assets/world-map.png");
+
+        this.load.audio('task-success', 'assets/sounds/task-success.wav');
+        this.load.audio('task-fail', 'assets/sounds/task-fail.mp3');
+        this.load.audio('new-task', 'assets/sounds/new-task.wav');
+        this.load.audio('plane-crash', 'assets/sounds/plane-crash.wav');
+        this.load.audio('game-start', 'assets/sounds/game-start.mp3');
     }
 
     create()
@@ -108,6 +114,12 @@ export default class GameScene extends Phaser.Scene
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.esc_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+
+        // Toista käynnistysääni
+        //this.sound.play('game-start');
+
+        // Pelin alustuksen jatkaminen
+        //this.setupGame();
 
         // Tasks GUI
 
