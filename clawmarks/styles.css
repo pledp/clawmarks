@@ -199,7 +199,7 @@ h4 {
 }
 
 .carousel .images img {
-    max-width: 600px; /* Säädä kuvan kokoa tarpeen mukaan */
+    max-width: 700px; /* Säädä kuvan kokoa tarpeen mukaan */
     display: block;
     margin: 0 auto;
 }
