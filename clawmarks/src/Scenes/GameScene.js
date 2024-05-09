@@ -62,7 +62,7 @@ export default class GameScene extends Phaser.Scene
         // Move planes on map
         for(let i = 0; i < this.flights_to_be_moved.length; i++) {
             
-            this.flights_to_be_moved[i].UpdateEnding(delta);
+            this.flights_to_be_moved[i].UpdateEnding(delta, this);
 
             if(this.flights_to_be_moved[i].t >= 1) {
                 this.flights_to_be_moved.splice(i, 1);
@@ -92,6 +92,8 @@ export default class GameScene extends Phaser.Scene
         this.load.audio('new-task', 'assets/sounds/new-task.wav');
         this.load.audio('plane-crash', 'assets/sounds/plane-crash.wav');
         this.load.audio('game-start', 'assets/sounds/game-start.mp3');
+
+        this.load.aseprite("explosion", "assets/explosion.png", "assets/explosion.json")
     }
 
     create()
@@ -113,6 +115,7 @@ export default class GameScene extends Phaser.Scene
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.esc_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+        this.anims.createFromAseprite("explosion")
 
         // Toista käynnistysääni
         //this.sound.play('game-start');

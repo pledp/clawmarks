@@ -82,7 +82,7 @@ export default class FlightPin {
         }
     }
 
-    UpdateEnding(delta) {
+    UpdateEnding(delta, scene) {
         this.t += 0.0001 * delta; 
         this.flight_pin.x = SnapToGrid(this.GetOnCurve(this.t).x, 20)
         this.flight_pin.y = SnapToGrid(this.GetOnCurve(this.t).y, 20)
@@ -90,6 +90,8 @@ export default class FlightPin {
         this.flight_pin.angle = this.SnapAngle(this.GetAngle(), 45);
 
         if(this.t >= 1) {
+            scene.add.sprite(this.flight_pin.x, Clawmarks.height - 128, "explosion").setScale(4).play({ key: "explosion", repeat: 0, hideOnComplete: true });
+            scene.sound.play("plane-crash");
             this.airport_pin.destroy();
             this.flight_pin.destroy();
             this.points_container.destroy();
