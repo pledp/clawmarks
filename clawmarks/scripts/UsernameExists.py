@@ -19,5 +19,7 @@ def UsernameExists(username):
     cursor.execute(f"SELECT 1 FROM game WHERE screen_name = '{username}'")
     rows = cursor.fetchall()
     
+    conn.close()
+
     exists = bool(rows)
     return jsonify({'exists': exists})

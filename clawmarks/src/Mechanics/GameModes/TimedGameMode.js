@@ -3,6 +3,8 @@ import Flight from "../Flight.js"
 import { FireTask } from "../Tasks.js";
 import LogItem from "../../UI/LogItem.js";
 
+import Clawmarks from "../../Clawmarks.js";
+
 export default class TimedGameMode extends GameMode {
 
     constructor(log_callback) {
@@ -26,6 +28,7 @@ export default class TimedGameMode extends GameMode {
 
         this.countdown_timer = 0;
 
+        this.end_text = "";
     }
 
     AddTaskListener(listener) {
@@ -68,8 +71,16 @@ export default class TimedGameMode extends GameMode {
             this.timer += delta / 1000;
 
             // End game at 5 minutes
-            if(this.timer > 300) {
+            if(this.timer > 20) {
                 this.is_finishing = true;
+                if(scene.points > Clawmarks.user.high_score) {
+                    this.end_text = `New high-score! ${scene.points} points!`;
+                    Clawmarks.user.high_score = scene.points;
+                    let response = fetch(`http://127.0.0.1:3000/SaveUserChanges/${Clawmarks.user.username}/${scene.points}`);
+                }
+                else {
+                    this.end_text = `The game ended with ${scene.points} points.`;
+                }
             }
                 
             // After a period, add a new flight
@@ -88,21 +99,18 @@ export default class TimedGameMode extends GameMode {
     UpdateEndScene(scene, time, delta) {
         let reg = new RegExp('^[0-9]+$');
 
-
-
-        let end_text = `The game ended with ${scene.points} points.`;
         this.char_time += delta / 1000;
 
         if(this.char_time > 0.3) {
-            if(this.cur_char_index >= end_text.length) {
+            if(this.cur_char_index >= this.end_text.length) {
                 scene.time.delayedCall(3000, () => {
                     this.is_playing = false;
                 }, [], this);
             }
             else {
-                let letter = scene.add.bitmapText(scene.game.config.width / 2 - (end_text.length / 2) * 26 + this.cur_char_index * 26, scene.game.config.height / 2 - 13, 'PixelFont', end_text[this.cur_char_index], 26);
+                let letter = scene.add.bitmapText(scene.game.config.width / 2 - (this.end_text.length / 2) * 26 + this.cur_char_index * 26, scene.game.config.height / 3, 'PixelFont', this.end_text[this.cur_char_index], 26);
 
-                if(reg.test(end_text[this.cur_char_index])) {
+                if(reg.test(this.end_text[this.cur_char_index])) {
                     letter.setTint(0x00E436);
                 }
 
@@ -114,7 +122,7 @@ export default class TimedGameMode extends GameMode {
         }
 
         for(let i = 0; i < this.letters.length; i++) {
-            this.letters[i].y = scene.game.config.height / 2 - 13 + Math.sin((time / 500) + i) * 20;
+            this.letters[i].y = scene.game.config.height / 3 + Math.sin((time / 500) + i) * 20;
         }
     }
 

@@ -4,6 +4,7 @@ import GameConfig from "../Clawmarks.js";
 
 import TimedGameMode from "../Mechanics/GameModes/TimedGameMode.js";
 import Tutorial from "../Mechanics/GameModes/Tutorial.js";
+import Clawmarks from "../Clawmarks.js";
 
 export default class MenuScene extends Phaser.Scene
 {
@@ -131,7 +132,7 @@ export default class MenuScene extends Phaser.Scene
 
         this.cursor = this.add.bitmapText(128 - 50, 128, 'PixelFont', ">", 50);
 
-        let string = "HEL-Industries (TM) Terminal (TM) v. 0.2";
+        let string = `Welcome, ${Clawmarks.user.username}, with a high-score of ${Clawmarks.user.high_score}, to HEL-Industries (TM) Terminal (TM) v. 0.2`;
         this.add.bitmapText(
             this.game.config.width - string.length * 16 - 64, 
             this.game.config.height - 64, 

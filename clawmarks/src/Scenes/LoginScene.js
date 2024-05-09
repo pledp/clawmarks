@@ -2,6 +2,8 @@ import Button from "../UI/Button.js"
 import CRTShader from "../../assets/shaders/CRTShader.js";
 import TextField from "../UI/TextField.js";
 import GameConfig from "../Clawmarks.js"
+import { User } from "../Clawmarks.js";
+
 
 export default class LoginScene extends Phaser.Scene
 {
@@ -17,8 +19,6 @@ export default class LoginScene extends Phaser.Scene
             'SyntaxError: missing variable name', 'ReferenceError: reference to undefined property "x"'
         ]
         this.lag_texts = [];
-
-        this.switch_scene = false;
     }
 
     update(time, delta) {
@@ -68,10 +68,6 @@ export default class LoginScene extends Phaser.Scene
             }
             this.lag_texts = [];
         }
-
-        if(this.switch_scene) {
-            this.scene.start("MenuScene");
-        }
     } 
 
 
@@ -93,12 +89,16 @@ export default class LoginScene extends Phaser.Scene
         }, this.HoverMenuItem.bind(this));
 
         this.login_button = new Button("LOGIN >", () => {
-            this.scene.start("MenuScene");
+            this.LoginUser(this.login_field.text);
         }, this.HoverMenuItem.bind(this));
 
         this.text_field = this.add.bitmapText(64, 64, "PixelFont", ">", 30);
         this.login_field.create(this, 104, 64, 30, 0x00E346);
         this.login_button.create(this, 64, 114, 30, 0x00E346);
+
+        this.login_error_text = this.add.bitmapText(64, 154, "PixelFont", "", 20).setTint(0xFF004D);
+        this.register_error_text = this.add.bitmapText(64, 454, "PixelFont", "", 20).setTint(0xFF004D);
+
 
         this.text_field = this.add.bitmapText(64, 364, "PixelFont", ">", 30);
         this.register_field.create(this, 104, 364, 30, 0x00E346);
@@ -139,14 +139,43 @@ export default class LoginScene extends Phaser.Scene
     }
 
     async RegisterUser(name) {
-        const response = await fetch(`http://127.0.0.1:3000/UsernameExists/${name}`);
-        const user_exists = await response.json();
+        if(name) {
+            const response = await fetch(`http://127.0.0.1:3000/UsernameExists/${name}`);
+            const user_exists = await response.json();
 
-        if(!user_exists.exists) {
-            const user = await fetch(`http://127.0.0.1:3000/CreateNewUser/${name}`);
-            const user_2 = await user.json();
+            if(!user_exists.exists) {
+                const user = await fetch(`http://127.0.0.1:3000/CreateNewUser/${name}`);
+                GameConfig.SetUser(new User(name, 0));
 
-            this.switch_scene = true
+                this.scene.start("MenuScene");
+            }
+            else {
+                this.register_error_text.text = "User already exists!";
+            }
+        }
+        else {
+            this.register_error_text.text = "Empty input!";
+        }
+    }
+
+    async LoginUser(name) {
+        if(name) {
+            let response = await fetch(`http://127.0.0.1:3000/UsernameExists/${name}`);
+            const user_exists = await response.json();
+            if(user_exists.exists) {
+                response = await fetch(`http://127.0.0.1:3000/GetUser/${name}`);
+                const user = await response.json();
+
+                GameConfig.SetUser(new User(user.username, user.high_score))
+
+                this.scene.start("MenuScene");
+            }
+            else {
+                this.login_error_text.text = "User don't exist!";
+            }
+        }
+        else {
+            this.login_error_text.text = "Empty input!";
         }
     }
 }

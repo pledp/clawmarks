@@ -9,6 +9,8 @@ export default class Clawmarks {
     static width;
     static height;
 
+    static user;
+
     static SetConfig(config) {
         if("Debug" in config)
             Clawmarks.Debug = config.Debug;
@@ -19,6 +21,17 @@ export default class Clawmarks {
 
         Clawmarks.width = config.width;
         Clawmarks.height = config.height;
+    }
+
+    static SetUser(user) {
+        Clawmarks.user = user;
+    }
+}
+
+export class User {
+    constructor(username, high_score) {
+        this.username = username;
+        this.high_score = high_score;
     }
 }
 

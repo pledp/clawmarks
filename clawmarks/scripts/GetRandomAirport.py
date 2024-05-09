@@ -18,6 +18,8 @@ def RandomAirport():
     cur.execute(f'SELECT ident,  latitude_deg, longitude_deg FROM airport WHERE type = "large_airport" ORDER BY RANDOM() LIMIT 1')
     rows = cur.fetchall()
 
+    conn.close();
+
     if rows:
         response = {
             "icao": rows[0][0],

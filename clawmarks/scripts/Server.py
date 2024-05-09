@@ -5,6 +5,7 @@ from GetRandomAirport import airport_blueprint
 from CreateNewUser import new_user_blueprint
 from SaveUserChanges import save_user_blueprint
 from UsernameExists import user_exists_blueprint
+from GetUser import get_user_blueprint
 
 
 import os
@@ -17,6 +18,7 @@ app.register_blueprint(airport_blueprint)
 app.register_blueprint(new_user_blueprint)
 app.register_blueprint(save_user_blueprint)
 app.register_blueprint(user_exists_blueprint)
+app.register_blueprint(get_user_blueprint)
 
 
 if __name__ == '__main__':
