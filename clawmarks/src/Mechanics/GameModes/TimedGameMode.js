@@ -11,6 +11,7 @@ export default class TimedGameMode extends GameMode {
         this.add_task_listeners = [];
 
         this.log_callback = log_callback;
+        this.remove_task_on_crash = true;
 
         this.letters = [];
         this.char_time = 0;

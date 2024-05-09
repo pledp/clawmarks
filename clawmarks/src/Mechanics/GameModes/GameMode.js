@@ -2,6 +2,7 @@ export default class GameMode {
     #time;
     #game_end_text;
 
+    remove_task_on_crash = false;
     is_playing = false;
     tasks = [];
 

@@ -248,7 +248,7 @@ export default class GameScene extends Phaser.Scene
             }
 
             // On crash
-            if(this.num_of_fails >= 3) {
+            if(this.num_of_fails >= 3 && this.game_mode.remove_task_on_crash) {
                 switch(this.game_mode.tasks[this.cur_task].type) {
                     case Types.Fire:
                         this.Log(new LogItem("HEL'S FIRE HAS... crashed?.", 0xFF004D));
