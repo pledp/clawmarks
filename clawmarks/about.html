@@ -35,10 +35,10 @@
                     <a href="#tasks">tasks.</a>
                 </li>
                 <li>
-                    <a href="#">server.</a>
+                    <a href="#server">server.</a>
                 </li>
                 <li>
-                    <a href="#">login & stuff.</a>
+                    <a href="#login-stuff">login & stuff.</a>
                 </li>
             </ul>
         </div>
@@ -72,16 +72,68 @@
                         </li>
                         <li class="about-list-item">
                             <h4 class="text-white">Heading</h4>
+                            <p class="text-white" style="padding-left: 1em;">Shows up randomly accompanying a flight.</p>
+                            <p class="text-white" style="padding-left: 1em;">To solve the task:<br><var>AX230 - HEL -> SOME - Set heading to 075</var>,</p>
+                            <p class="text-white" style="padding-left: 1em;">you write:<br><var>AX230 heading 075</var></p>
                         </li>
                         <li class="about-list-item">
                             <h4 class="text-white">Landing</h4>
+                            <p class="text-white" style="padding-left: 1em;">Shows up randomly accompanying a flight.</p>
+                            <p class="text-white" style="padding-left: 1em;">To solve the task:<br><var>AX645 - HEL -> SOME - Permit landing</var>,</p>
+                            <p class="text-white" style="padding-left: 1em;">you write:<br><var>AX645 permit landing HEL</var></p>
                         </li>
                         <li class="about-list-item">
                             <h4 class="text-white">Fire</h4>
+                            <p class="text-white" style="padding-left: 1em;">Occurs randomly as an emergency situation at the airport.</p>
+                            <p class="text-white" style="padding-left: 1em;">To solve the task:<br><var>Fire at runway 3</var>,</p>
+                            <p class="text-white" style="padding-left: 1em;">you write:<br><var>fire runway 3</var></p>
                         </li>
                     </ul>
-
                 </h3>
+            </div>
+                    <div id="server" class="about-section">
+                    <h3 class="text-white about-title">server.</h3>
+                    <p class="text-white about-block">
+                        The Flask server offers a lightweight and flexible platform that efficiently facilitates the backend functions of the game. It allows the construction of a REST API that the game's frontend uses to communicate with the game database. This API handles all data transmission and reception between the players and the game server, making the game dynamic and interactive.</</p>
+
+                    <h4 class="text-white">User Account Management:</h4>
+                    <p class="text-white about-block">
+                    Flask enables user registration and login. This is visible in the game as players can create user accounts, log in, and start the game from where they last stopped.</p>
+
+                    <h4 class="text-white">Real-time Data Processing:</h4>
+                    <p class="text-white about-block">
+                    Flask handles game events such as task completion and score calculation in real time. This appears in the game as players receive immediate feedback on task completion, making the game interactive and engaging.</p>
+
+                    <h4 class="text-white">Task Management:</h4>
+                    <p class="text-white about-block">
+                    Flask manages the creation and distribution of tasks to players. This feature is visible in the game as players continuously receive new tasks that help them earn points.</p>
+
+                        </div>
+                    <div id="login-stuff" class="about-section">
+    <h3 class="text-white about-title">login & stuff</h3>
+    <p class="text-white about-block">
+        Our game's login system is designed with an emphasis on user privacy and security. It does not collect or store personal information, focusing instead on enhancing gameplay and user experience.</p>
+
+    <h4 class="text-white">Technical Implementation:</h4>
+    <p class="text-white about-block">
+        The login process utilizes the Flask web framework, enabling simple yet effective user management. When a player creates a new account or logs in, the game server processes the data as follows:</p>
+
+    <h4 class="text-white">Registration:</h4>
+    <p class="text-white about-block">
+        Players enter their chosen username and password. The Flask server checks if the username is already in use. If the username is available, the information is stored in the database in encrypted form.</p>
+
+    <h4 class="text-white">Login:</h4>
+    <p class="text-white about-block">
+         Players enter their username and password. Flask verifies the information against the database. If the credentials match, players can continue the game from where they last left off.</p>
+
+
+    <h4 class="text-white">Security and Privacy:</h4>
+    <p class="text-white about-block">
+        We do not store personal information such as email addresses or other identifying details. We employ strong password encryption to ensure user data remains protected. Login details are only stored as necessary for the operation of the game.</p>
+    <p class="text-white about-block">
+        This system ensures the privacy of our players while providing a seamless and secure gaming experience. The login mechanism is designed to be quick and non-intrusive, allowing players to focus on what's important – enjoying the game without worrying about data security.</p>
+
+                </div>
             </div>
         </div>
     </div>
