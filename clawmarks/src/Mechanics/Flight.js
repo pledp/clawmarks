@@ -1,21 +1,17 @@
 import {Task, AltitudeTask, HeadingTask, TakeoffTask, LandingTask} from "./Tasks.js"
-
-class Test {
-
-}
+import Clawmarks from "../Clawmarks.js";
 
 export default class Flight extends Task {
     static airliners = ["AX", "AY"];
     static available_tasks = [AltitudeTask, HeadingTask, TakeoffTask, LandingTask];
 
-    static async CreateFlight(force_task = null) {
+    static CreateFlight(force_task = null) {
         let flight = new Flight();
 
         flight.airliner = this.airliners[Math.floor(Math.random() * Flight.airliners.length)]
         flight.flight_number = Math.floor(Math.random() * 9999) + 100
 
-        const response = await fetch(`http://127.0.0.1:3000/RandomAirport`);
-        let random_airport = await response.json();
+        let random_airport = Clawmarks.airports[Math.floor(Math.random() * Clawmarks.airports.length)];
         
         flight.lat = random_airport.lat;
         flight.lon = random_airport.lon;

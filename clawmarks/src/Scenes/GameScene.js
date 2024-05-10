@@ -12,18 +12,6 @@ export default class GameScene extends Phaser.Scene
 {
     constructor() {
         super({key: "GameScene"});
-        
-        this.airport_pins = [];
-
-        this.flights_to_be_moved = [];
-        this.log = [];
-        this.log_arrows = [];
-        this.log_timer = 0;
-
-        this.t = 0
-
-        this.home_x = 10.90;
-        this.home_y = 63.44;
     }
 
     init(data) {
@@ -38,16 +26,8 @@ export default class GameScene extends Phaser.Scene
             this.blink_timer = 0;
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.up_key) && this.cur_task > 0) {
-            this.MoveCursor(this.cur_task - 1);
-        }
-        else if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.tasks_container.list.length - 1) {
-            this.MoveCursor(this.cur_task + 1);
-        }
-        if(Phaser.Input.Keyboard.JustDown(this.esc_key)) {
-            this.EndGame();
-        }
-
+        
+        
         if(this.game_mode.is_playing) {
             this.game_mode.Update(this, time, delta);
 
@@ -58,7 +38,7 @@ export default class GameScene extends Phaser.Scene
             this.EndGame();
 
         this.points_text.text = `${this.points}p  ${this.eco_points}ep`;
-
+        
         // Move planes on map
         for(let i = 0; i < this.flights_to_be_moved.length; i++) {
             
@@ -68,9 +48,9 @@ export default class GameScene extends Phaser.Scene
                 this.flights_to_be_moved.splice(i, 1);
             }
         }
-
+        
         this.log_timer += delta / 1000
-
+        
         if(this.log_timer >= 0.01) {
             for(let i = 0; i < this.log.length; i++) {
                 if(this.log[i].cur_index < this.log[i].item.message.length) {
@@ -81,9 +61,19 @@ export default class GameScene extends Phaser.Scene
 
             this.log_timer = 0;
         }
+        
+        if(Phaser.Input.Keyboard.JustDown(this.up_key) && this.cur_task > 0) {
+            this.MoveCursor(this.cur_task - 1);
+        }
+        else if(Phaser.Input.Keyboard.JustDown(this.down_key) && this.cur_task < this.tasks_container.list.length - 1) {
+            this.MoveCursor(this.cur_task + 1);
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.esc_key)) {
+            this.EndGame();
+        }
     }
 
-    preload() {
+    async preload() {
         this.load.image('map', "assets/world-map.png");
         this.load.image('airplane', "assets/airplane.png");
 
@@ -98,6 +88,26 @@ export default class GameScene extends Phaser.Scene
 
     create()
     {
+
+        this.flights_to_be_moved = [];
+        this.log = [];
+        this.log_arrows = [];
+        this.log_timer = 0;
+
+        this.t = 0
+
+        this.home_x = 10.90;
+        this.home_y = 63.44;
+
+        
+        this.cur_task = 0;
+        this.num_of_fails = 0;
+
+        this.points = 0;
+        this.eco_points = 0;
+
+        this.blink_timer = 0;
+
         // Set map width to 1400.
         this.map = this.add.sprite(0, 0, 'map').setOrigin(0,0);
         this.map.scale = 4.66666666667;
@@ -115,23 +125,14 @@ export default class GameScene extends Phaser.Scene
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.esc_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
-        this.anims.createFromAseprite("explosion")
+        if(!this.anims.exists("explosion"))
+            this.anims.createFromAseprite("explosion")
 
         // Toista käynnistysääni
         //this.sound.play('game-start');
 
         // Pelin alustuksen jatkaminen
         //this.setupGame();
-
-        // Tasks GUI
-
-        this.cur_task = 0;
-        this.num_of_fails = 0;
-
-        this.points = 0;
-        this.eco_points = 0;
-
-        this.blink_timer = 0;
 
         // Start gamemode
 
@@ -227,13 +228,13 @@ export default class GameScene extends Phaser.Scene
 
     // Remove task
 
-    async HandleCommand(command) {
+    HandleCommand(command) {
         let list = this.tasks_container.list;
 
         if(this.game_mode.tasks[this.cur_task]) {
             if(this.game_mode.tasks[this.cur_task].ValidateCommand(command)) {
                 this.Log(new LogItem(this.game_mode.tasks[this.cur_task].task_complete_text, 0x00E436));
-                await this.game_mode.OnCompletion(this.cur_task);
+                this.game_mode.OnCompletion(this.cur_task);
                 this.points += this.game_mode.tasks[this.cur_task].points_to_award;
 
 
@@ -253,7 +254,7 @@ export default class GameScene extends Phaser.Scene
             if(this.num_of_fails >= 3 && this.game_mode.remove_task_on_crash) {
                 switch(this.game_mode.tasks[this.cur_task].type) {
                     case Types.Fire:
-                        this.Log(new LogItem("HEL'S FIRE HAS... crashed?.", 0xFF004D));
+                        this.Log(new LogItem("FIRE has... crashed?.", 0xFF004D));
                         this.points -= 10;
                         break;
                     default:

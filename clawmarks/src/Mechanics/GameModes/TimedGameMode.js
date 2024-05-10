@@ -126,8 +126,8 @@ export default class TimedGameMode extends GameMode {
         }
     }
 
-    async AddTask(force_task = null, make_flight = true, spot = null) {
-        let flight = await Flight.CreateFlight(force_task);
+    AddTask(force_task = null, make_flight = true, spot = null) {
+        let flight = Flight.CreateFlight(force_task);
 
         if (!make_flight) {
             flight = new FireTask(); 
@@ -152,9 +152,9 @@ export default class TimedGameMode extends GameMode {
         return `${text}${(this.timer % 60).toFixed(2)}`;
     }
 
-    async OnCompletion(task) {
+    OnCompletion(task) {
         if(Math.random() > 0.80) {
-            await this.AddTask(FireTask, false, 0);
+            this.AddTask(FireTask, false, 0);
 
         }
     }

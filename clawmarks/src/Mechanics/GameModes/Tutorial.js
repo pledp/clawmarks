@@ -83,7 +83,7 @@ export default class Tutorial extends GameMode {
 
     }
 
-    async Update(scene, time, delta) {
+    Update(scene, time, delta) {
     
         if(!this.is_finishing) {
             if(this.cur_text_index < this.tutorial_text.length) {
@@ -125,8 +125,8 @@ export default class Tutorial extends GameMode {
         this.num_completed_tasks++;
     }
 
-    async AddTask(force_task = null, make_flight = true, spot = null) {
-        let flight = await Flight.CreateFlight(force_task);
+    AddTask(force_task = null, make_flight = true, spot = null) {
+        let flight = Flight.CreateFlight(force_task);
         this.tasks.push(flight);
 
         this.NotifyNewTask(spot);

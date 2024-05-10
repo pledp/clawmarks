@@ -31,5 +31,6 @@ Clawmarks.SetConfig({
     width: 1920,
     height: 1080,
 });
+Clawmarks.GetAirports();
 
 const game = new Phaser.Game(config);

@@ -5,7 +5,7 @@ export default class Clawmarks {
 
     static Debug = false;
     static UseShader = true;
-
+    static airports;
     static width;
     static height;
 
@@ -25,6 +25,14 @@ export default class Clawmarks {
 
     static SetUser(user) {
         Clawmarks.user = user;
+    }
+
+    static async GetAirports() {
+        Clawmarks.airports = [];
+
+        let response = await fetch(`http://127.0.0.1:3000/RandomAirport/100`);
+        response = await response.json();
+        Clawmarks.airports = response;
     }
 }
 

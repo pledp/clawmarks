@@ -21,17 +21,11 @@ const fragShader = `
         
         vec3 color = vec3(0.0, 0.0, 0.0);
     
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.1;
-        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.1;
-    
-        color += sample(tex,tc + vec2(xoffs.x, yoffs.y)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.y, yoffs.y)) * 0.1;
-        color += sample(tex,tc + vec2(    0.0, yoffs.y)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.z, yoffs.y)) * 0.1;
-        color += sample(tex,tc + vec2(xoffs.w, yoffs.y)) * 0.1;
+        color += sample(tex,tc + vec2(xoffs.x, yoffs.x)) * 0.2;
+        color += sample(tex,tc + vec2(xoffs.y, yoffs.x)) * 0.2;
+        color += sample(tex,tc + vec2(    0.0, yoffs.x)) * 0.2;
+        color += sample(tex,tc + vec2(xoffs.z, yoffs.x)) * 0.2;
+        color += sample(tex,tc + vec2(xoffs.w, yoffs.x)) * 0.2;
     
         return color;
     }

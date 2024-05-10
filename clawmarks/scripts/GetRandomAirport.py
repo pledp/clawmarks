@@ -9,23 +9,29 @@ airport_blueprint = Blueprint("RandomAirport", __name__)
 db_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/assets/flight_game.db"
 
 
-@airport_blueprint.route('/RandomAirport')
+@airport_blueprint.route('/RandomAirport/<n>')
 @cross_origin()
-def RandomAirport():
+def RandomAirport(n):
     conn = sqlite3.connect(db_path);
 
     cur = conn.cursor();
-    cur.execute(f'SELECT ident,  latitude_deg, longitude_deg FROM airport WHERE type = "large_airport" ORDER BY RANDOM() LIMIT 1')
+    cur.execute(f'SELECT ident,  latitude_deg, longitude_deg FROM airport WHERE type = "large_airport" ORDER BY RANDOM() LIMIT {n}')
     rows = cur.fetchall()
+
+    airports = [{
+        "icao": row[0],
+        "lat": row[1],
+        "lon": row[2],
+    } for row in rows]
+
 
     conn.close();
 
     if rows:
-        response = {
-            "icao": rows[0][0],
-            "lat": rows[0][1],
-            "lon": rows[0][2],
-        }
-
+        response = [{
+            "icao": row[0],
+            "lat": row[1],
+            "lon": row[2],
+        } for row in rows]
         return response;
     return False

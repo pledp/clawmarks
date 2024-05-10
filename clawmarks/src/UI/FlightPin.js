@@ -7,6 +7,7 @@ export default class FlightPin {
         this.flight_pin = undefined;
         this.points_container = undefined;
         this.t = undefined;
+        this.is_crashing = false;
 
         this.from = new Vector2((from.x + 180) * (map.displayWidth / 360), map.displayHeight - ((from.y + 90) * (map.displayHeight / 180)));
         this.to = new Vector2((to.x + 180) * (map.displayWidth / 360), map.displayHeight - ((to.y + 90) * (map.displayHeight / 180)))
@@ -41,7 +42,7 @@ export default class FlightPin {
     }
 
     SetCrashCurve() {
-
+        this.is_crashing = true
         const start_point = this.curve.getPoint(this.t);
         let crash_curve_x = 100;
         if(this.to.x > start_point.x) {
@@ -90,8 +91,10 @@ export default class FlightPin {
         this.flight_pin.angle = this.SnapAngle(this.GetAngle(), 45);
 
         if(this.t >= 1) {
-            scene.add.sprite(this.flight_pin.x, Clawmarks.height - 128, "explosion").setScale(4).play({ key: "explosion", repeat: 0, hideOnComplete: true });
-            scene.sound.play("plane-crash");
+            if(this.is_crashing) {
+                scene.add.sprite(this.flight_pin.x, Clawmarks.height, "explosion").setScale(this.flight_pin.scale * 3).play({ key: "explosion", repeat: 0, hideOnComplete: true }).setOrigin(0.5, 1);
+                scene.sound.play("plane-crash");
+            }
             this.airport_pin.destroy();
             this.flight_pin.destroy();
             this.points_container.destroy();
